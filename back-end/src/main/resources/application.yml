@@ -1,0 +1,25 @@
+server:
+  port: 9090
+
+spring:
+  security:
+    user:
+      name: admin
+      password: nswdfq
+      roles: admin,root
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # TODO: 指定数据库
+    url: jdbc:mysql://localhost:3306/power-plant?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
+    # TODO: 修改用户名与密码
+    username: yangao
+    password:  nswdfq
+  # 配置文件传输大小
+  servlet:
+    multipart:
+      max-request-size: 100MB
+      max-file-size: 100MB
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
