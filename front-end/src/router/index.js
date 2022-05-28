@@ -1,29 +1,49 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import { addDynamicRoute } from '@/utils/my-router-utils'
+import store from '@/store'
 
 Vue.use(VueRouter)
 
-const routes = [
-  {
-    path: '/',
-    name: 'home',
-    component: HomeView
-  },
-  {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  }
-]
+const routes = [{
+  name: 'main',
+  path: '/main',
+  component: () => import('@/views/main/MainView')
+}, {
+  name: 'login',
+  path: '/login',
+  component: () => import('@/views/LoginView')
+}]
 
-const router = new VueRouter({
-  mode: 'history',
-  base: process.env.BASE_URL,
-  routes
+function createRouter () {
+  return new VueRouter({
+    mode: 'history',
+    base: process.env.BASE_URL,
+    routes
+  })
+}
+
+const router = createRouter()
+
+export function resetRouter () {
+  router.matcher = createRouter().matcher
+}
+
+router.beforeEach((to, from, next) => {
+  // 有可以进入的路由则直接进入
+  if (router.getMatchedComponents(to).length > 0) next()
+  else { // 没有则进行路由的动态添加
+    const menuList = store.state.menu.menuList
+    const menuParentName = 'main'
+    // 重置路由并动态添加路由
+    addDynamicRoute(menuParentName, menuList)
+    router.addRoute({
+      path: '*',
+      name: 'notFound',
+      component: () => import('@/views/NotFound')
+    })
+    next(to)
+  }
 })
 
 export default router

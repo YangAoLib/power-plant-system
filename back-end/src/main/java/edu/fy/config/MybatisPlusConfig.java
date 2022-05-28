@@ -7,6 +7,9 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * @author YangAo
+ */
 @Configuration
 @MapperScan("edu.fy.mapper")
 public class MybatisPlusConfig {

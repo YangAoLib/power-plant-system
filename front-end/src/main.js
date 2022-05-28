@@ -12,8 +12,10 @@ Vue.config.productionTip = false
 Vue.use(ElementUI)
 Vue.use(VueAxios, request)
 
-new Vue({
+const app = new Vue({
   router,
   store,
   render: h => h(App)
 }).$mount('#app')
+
+export default app
