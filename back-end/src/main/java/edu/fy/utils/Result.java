@@ -65,6 +65,22 @@ public class Result<T> {
     }
 
     /**
+     * 失败操作, 根据数据码与数据进行返回
+     * @param resultCode 数据码
+     * @param data 数据
+     * @return 失败结果信息
+     * @param <D> 数据类型
+     */
+    public static <D> Result<D> fail(ResultCode resultCode, D data){
+        Result<D> result=new Result<>();
+        // 设置状态码
+        result.setResultCode(resultCode);
+        // 设置数据
+        result.setData(data);
+        return result;
+    }
+
+    /**
      * 捕获异常自定义异常时, 进行失败返回, 数据为异常的message
      * @param customException 捕获的自定义异常
      * @return 失败结果信息

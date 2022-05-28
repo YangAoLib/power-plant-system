@@ -6,6 +6,7 @@ import lombok.Getter;
 
 /**
  * 性别: 0-男, 1-女
+ *
  * @author YangAo
  * @Description 性别枚举类
  * @create 2022-05-28 17:41

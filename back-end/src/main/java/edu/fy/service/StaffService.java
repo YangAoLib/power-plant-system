@@ -13,8 +13,14 @@ public interface StaffService extends IService<Staff> {
     /**
      * 添加人员信息
      * @param staff 人员信息
-     * @return 添加情况
+     * @return 是否成功
      */
     Boolean saveStaff(Staff staff);
 
+    /**
+     * 根据id更新人员信息, 包括密码
+     * @param staff 人员信息, 一定要包含id
+     * @return 是否成功
+     */
+    Boolean updateStaff(Staff staff);
 }

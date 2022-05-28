@@ -23,6 +23,7 @@ import java.util.Date;
 @Schema(description = "人员信息类")
 @Data
 public class Staff implements Serializable {
+
     /**
      * 主键
      */

@@ -5,7 +5,6 @@ import edu.fy.entity.enums.DeletedEnum;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -20,6 +19,7 @@ public class MybatisPlusMetaObjectHandler implements MetaObjectHandler {
      */
     @Override
     public void insertFill(MetaObject metaObject) {
+        // 创建时间
         this.strictInsertFill(metaObject, "createTime", Date.class, new Date());
         // 默认未删除
         this.strictInsertFill(metaObject, "isDeleted", DeletedEnum.class, DeletedEnum.NOT_DELETED);
@@ -31,6 +31,7 @@ public class MybatisPlusMetaObjectHandler implements MetaObjectHandler {
      */
     @Override
     public void updateFill(MetaObject metaObject) {
-        this.strictUpdateFill(metaObject, "updateTime", LocalDateTime.class, LocalDateTime.now());
+        // 更新时间
+        this.strictUpdateFill(metaObject, "updateTime", Date.class, new Date());
     }
 }
