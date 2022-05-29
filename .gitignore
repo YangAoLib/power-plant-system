@@ -225,3 +225,5 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
+# jrebel
+rebel.xml
