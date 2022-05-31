@@ -122,6 +122,7 @@ public class Staff implements Serializable {
      */
     @TableField(fill = FieldFill.INSERT)
     @Schema(description = "逻辑删除位: 0-未删除, 1-已删除")
+    @TableLogic
     private DeletedEnum isDeleted;
 
     @TableField(exist = false)

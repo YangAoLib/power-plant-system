@@ -2,7 +2,7 @@
   <div id="mian-view">
     <el-container style="height: 100vh">
       <!--头部-->
-      <el-header style="padding: 0"><main-header></main-header></el-header>
+      <el-header style="padding: 0; position: sticky"><main-header></main-header></el-header>
       <el-container>
         <!--侧边栏-->
         <el-aside style="width: 200px"><main-aside></main-aside></el-aside>
@@ -16,9 +16,13 @@
 <script>
 import MainHeader from '@/components/main/MainHeader'
 import MainAside from '@/components/main/MainAside'
+
 export default {
   name: 'MainView',
-  components: { MainAside, MainHeader }
+  components: { MainAside, MainHeader },
+  created () {
+    localStorage.setItem('userId', '1')
+  }
 }
 </script>
 

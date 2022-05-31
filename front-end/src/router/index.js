@@ -5,9 +5,12 @@ import store from '@/store'
 
 Vue.use(VueRouter)
 
+const menuParentName = store.state.menuParentName
+const menuPrefix = store.state.menuPrefix
+
 const routes = [{
-  name: 'main',
-  path: '/main',
+  name: menuParentName,
+  path: menuPrefix,
   component: () => import('@/views/main/MainView')
 }, {
   name: 'login',
@@ -33,8 +36,7 @@ router.beforeEach((to, from, next) => {
   // 有可以进入的路由则直接进入
   if (router.getMatchedComponents(to).length > 0) next()
   else { // 没有则进行路由的动态添加
-    const menuList = store.state.menu.menuList
-    const menuParentName = 'main'
+    const menuList = store.state.menuList
     // 重置路由并动态添加路由
     addDynamicRoute(menuParentName, menuList)
     router.addRoute({

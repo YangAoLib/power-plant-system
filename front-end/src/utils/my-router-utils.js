@@ -1,4 +1,4 @@
-import clone from '@/utils/clone'
+import clone from 'clone'
 import Path from 'path'
 import router from '@/router'
 
@@ -20,7 +20,8 @@ export function addRoute (parentName, item) {
   item = clone(item)
   if (item.component) {
     // 当前路由存在组件, 则直接添加到路由
-    router.addRoute(parentName, item)
+    const { children, ...singleItem } = item
+    router.addRoute(parentName, singleItem)
     parentName = item.name
     if (item.children) {
       // 有子路由则进行添加到父

@@ -14,14 +14,13 @@
 import MyMenuItem from '@/components/MyMenuItem'
 import MyRouterUtils from '@/utils/my-router-utils'
 import { resetRouter } from '@/router'
-import MenuList from '@/store/types/menu-list'
 export default {
   name: 'MainAside',
   components: { MyMenuItem },
   data () {
     return {
-      parentName: 'main',
-      parentPath: '/main',
+      parentName: '',
+      parentPath: '',
       /*
       path: 不能以 / 开头
       name: 路由名称
@@ -29,28 +28,13 @@ export default {
       icon: 菜单图标
       children: 子菜单
        */
-      items: [{
-        path: 'staff',
-        name: 'staff',
-        title: '人员管理',
-        icon: 'el-icon-user-solid',
-        children: [{
-          path: 'add',
-          name: 'staffAdd',
-          title: '人员添加',
-          icon: 'el-icon-plus',
-          component: '/main/staff/StaffAdd'
-        }, {
-          path: 'find',
-          name: 'staffFind',
-          title: '人员查看',
-          icon: 'el-icon-s-grid',
-          component: '/main/staff/StaffFind'
-        }]
-      }]
+      items: []
     }
   },
   created () {
+    this.parentName = this.$store.state.menuParentName
+    this.parentPath = this.$store.state.menuPrefix
+    this.items = this.$store.state.menuList
     if (this.$route.name === this.parentName) this.myAddRoute()
   },
   methods: {
@@ -59,9 +43,9 @@ export default {
       // 重置路由
       resetRouter()
       // 存储菜单列表
-      this.$store.commit(MenuList.SET_MENU_LIST, this.items)
-      this.$store.commit(MenuList.SET_MENU_PARENT_NAME, this.parentName)
-      this.$store.commit(MenuList.SET_MENU_PREFIX, this.parentPath)
+      // this.$store.commit(MenuList.SET_MENU_LIST, this.items)
+      // this.$store.commit(MenuList.SET_MENU_PARENT_NAME, this.parentName)
+      // this.$store.commit(MenuList.SET_MENU_PREFIX, this.parentPath)
       // 动态添加路由
       MyRouterUtils.addDynamicRoute(this.parentName, this.items)
       /* // 对当前的列表进行组件的生成

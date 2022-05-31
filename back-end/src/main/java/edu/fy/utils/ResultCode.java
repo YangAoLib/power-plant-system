@@ -21,7 +21,11 @@ public enum ResultCode {
     /**
      * 用户已经存在
      */
-    USER_IS_EXISTED(1001,"用户已存在");
+    USER_IS_EXISTED(1001,"用户已存在"),
+    /**
+     * 业务逻辑错误
+     */
+    LOGICAL_ERROR(2000, "业务逻辑错误");
     private final Integer status;
     private final String message;
     ResultCode(Integer status,String message){

@@ -1,6 +1,7 @@
 package edu.fy.entity.enums;
 
 import com.baomidou.mybatisplus.annotation.IEnum;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -13,6 +14,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum StatusEnum implements IEnum<Integer> {
     /**
      * 在职

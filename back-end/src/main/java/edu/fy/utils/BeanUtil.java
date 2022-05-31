@@ -24,9 +24,11 @@ public class BeanUtil {
     public static <T> T copyBean(Object source, Class<T> target) {
         T temp = null;
         try {
-            temp = target.getDeclaredConstructor().newInstance();
             // 源不为空, 才进行复制属性操作
-            if (source != null) BeanUtils.copyProperties(source, temp);
+            if (source != null) {
+                temp = target.getDeclaredConstructor().newInstance();
+                BeanUtils.copyProperties(source, temp);
+            }
         } catch (InstantiationException e) {
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
@@ -44,9 +46,9 @@ public class BeanUtil {
      * @param source 源列表
      * @param target 目标列表中元素的类型class
      * @return 复制后的列表
-     * @param <T>
+     * @param <T> 目标类型
      */
-    public static <T> List<T> copyList(List<Object> source, Class<T> target) {
+    public static <T> List<T> copyList(List<?> source, Class<T> target) {
         List<T> targetList = new ArrayList<>();
         // 如果列表为空, 则直接返回空的列表
         if (CollectionUtils.isEmpty(source)) {

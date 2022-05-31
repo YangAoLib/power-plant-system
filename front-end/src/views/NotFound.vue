@@ -1,5 +1,5 @@
 <template>
-  <div id="not-found">您所查找的页面不存在</div>
+  <div id="not-found"><h1>您所查找的页面不存在</h1></div>
 </template>
 
 <script>

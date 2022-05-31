@@ -21,7 +21,7 @@
 <script>
 
 import * as Path from 'path'
-import clone from '@/utils/clone'
+import clone from 'clone'
 
 export default {
   name: 'MyMenuItem',

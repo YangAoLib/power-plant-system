@@ -26,8 +26,17 @@ spring:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      # 配置逻辑删除
+      logic-not-delete-value: 0
+      logic-delete-value: 1
+      logic-delete-field: isDeleted
   # 配置通用枚举类包
   type-enums-package: edu.fy.entity.enums
+  # 配置实体类包
+  type-aliases-package: edu.fy.entity
+
 
 open-api:
   # 文档信息

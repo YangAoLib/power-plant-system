@@ -1,7 +1,7 @@
 package edu.fy.mapper;
 
-import edu.fy.entity.Office;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import edu.fy.entity.Office;
 
 /**
 * @author YangAo

@@ -1,7 +1,12 @@
 package edu.fy.mapper;
 
-import edu.fy.entity.Staff;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import edu.fy.entity.Staff;
+import edu.fy.entity.dto.StaffQueryConditionDTO;
+import edu.fy.entity.vo.StaffQueryWithCreatorAndUpdaterVO;
+import org.apache.ibatis.annotations.Param;
 
 /**
 * @author YangAo
@@ -11,7 +16,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface StaffMapper extends BaseMapper<Staff> {
 
+    Staff searchOneById(@Param("id") Integer id);
 
+    Page<StaffQueryWithCreatorAndUpdaterVO> searchAllByCondition(@Param("condition") StaffQueryConditionDTO condition, IPage<StaffQueryWithCreatorAndUpdaterVO> page);
 }
 
 

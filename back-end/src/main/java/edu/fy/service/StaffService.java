@@ -1,7 +1,10 @@
 package edu.fy.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import edu.fy.entity.Staff;
+import edu.fy.entity.dto.StaffQueryConditionDTO;
+import edu.fy.entity.vo.StaffQueryWithCreatorAndUpdaterVO;
 
 /**
 * @author YangAo
@@ -23,4 +26,11 @@ public interface StaffService extends IService<Staff> {
      * @return 是否成功
      */
     Boolean updateStaff(Staff staff);
+
+    /**
+     * 根据条件查询人员信息
+     * @param condition 人员信息查询条件
+     * @return 以Page的方式返回查询到的信息
+     */
+    Page<StaffQueryWithCreatorAndUpdaterVO> searchStaffByCondition(StaffQueryConditionDTO condition);
 }

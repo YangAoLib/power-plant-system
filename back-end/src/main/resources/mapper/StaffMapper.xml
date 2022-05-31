@@ -5,29 +5,120 @@
 <mapper namespace="edu.fy.mapper.StaffMapper">
 
     <resultMap id="BaseResultMap" type="edu.fy.entity.Staff">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="name" column="name" jdbcType="VARCHAR"/>
-            <result property="password" column="password" jdbcType="VARCHAR"/>
-            <result property="sex" column="sex" jdbcType="TINYINT"/>
-            <result property="phone" column="phone" jdbcType="VARCHAR"/>
-            <result property="cardId" column="card_id" jdbcType="CHAR"/>
-            <result property="originalHome" column="original_home" jdbcType="VARCHAR"/>
-            <result property="birthDate" column="birth_date" jdbcType="DATE"/>
-            <result property="status" column="status" jdbcType="TINYINT"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="createId" column="create_id" jdbcType="INTEGER"/>
-            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
-            <result property="updateId" column="update_id" jdbcType="INTEGER"/>
-            <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="TINYINT"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="cardId" column="card_id" jdbcType="CHAR"/>
+        <result property="originalHome" column="original_home" jdbcType="VARCHAR"/>
+        <result property="birthDate" column="birth_date" jdbcType="DATE"/>
+        <result property="status" column="status" jdbcType="TINYINT"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="createId" column="create_id" jdbcType="INTEGER"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateId" column="update_id" jdbcType="INTEGER"/>
+        <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <resultMap id="staffQueryWithCreatorAndUpdaterVOMap" type="staffQueryWithCreatorAndUpdaterVO" autoMapping="true">
+        <association property="creator" autoMapping="true" columnPrefix="c_"
+                     javaType="staffBaseWithDeletedDTO"/>
+        <association property="updater" autoMapping="true" columnPrefix="u_"
+                     javaType="staffBaseWithDeletedDTO"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,name,password,
+        id
+        ,name,password,
         sex,phone,card_id,
         original_home,birth_date,status,
         create_time,create_id,update_time,
         update_id,is_deleted
     </sql>
 
+    <select id="searchOneById" resultType="staff">
+        select
+        <include refid="Base_Column_List"/>
+        from staff
+        <where>
+            <if test="id != null">
+                id = #{id,jdbcType=NUMERIC}
+            </if>
+        </where>
+    </select>
+    <select id="searchAllByCondition" resultMap="staffQueryWithCreatorAndUpdaterVOMap">
+        select s.id,
+        s.name,
+        s.password,
+        s.sex,
+        s.phone,
+        s.card_id,
+        s.original_home,
+        s.birth_date,
+        s.status,
+        s.create_time,
+        s.create_id,
+        s.update_time,
+        s.update_id,
+        s.is_deleted,
+        sc.id c_id,
+        sc.name c_name,
+        sc.phone c_phone,
+        sc.card_id c_card_id,
+        sc.status c_status,
+        sc.is_deleted c_is_deleted,
+        su.id u_id,
+        su.name u_name,
+        su.phone u_phone,
+        su.card_id u_card_id,
+        su.status u_status,
+        su.is_deleted u_is_deleted
+        from staff s
+        left join staff sc on sc.id = s.create_id
+        left join staff su on su.id = s.update_id
+        <where>
+            <if test="condition.name != null and !condition.name.isBlank()">
+                and s.name like concat('%', #{condition.name}, '%')
+            </if>
+            <if test="condition.phone != null and !condition.phone.isBlank()">
+                and s.phone = #{condition.phone}
+            </if>
+            <if test="condition.cardId != null and !condition.cardId.isBlank()">
+                and s.card_id = #{condition.cardId}
+            </if>
+            <if test="condition.status != null">
+                and s.status = #{condition.status}
+            </if>
+            <if test="condition.sex != null">
+                and s.sex = #{condition.sex}
+            </if>
+            <if test="condition.originalHome != null and !condition.originalHome.isBlank()">
+                and s.original_home like concat('%', #{condition.originalHome}, '%')
+            </if>
+            <if test="condition.birthDateStart != null and condition.birthDateEnd != null and condition.birthDateStart &lt;= condition.birthDateEnd">
+                and s.birth_date between #{condition.birthDateStart} and #{condition.birthDateEnd}
+            </if>
+            <if test="condition.createTimeStart != null and condition.createTimeEnd != null and condition.createTimeStart &lt;= condition.createTimeEnd">
+                and s.create_time between #{condition.createTimeStart} and #{condition.createTimeEnd}
+            </if>
+            <if test="condition.updateTimeStart != null and condition.updateTimeEnd != null and condition.updateTimeStart &lt;= condition.updateTimeEnd">
+                and s.update_time between #{condition.updateTimeStart} and #{condition.updateTimeEnd}
+            </if>
+            <if test="condition.createId != null and condition.createId &gt;= 0">
+                and s.create_id = #{condition.createId}
+            </if>
+            <if test="condition.updateId != null and condition.updateId &gt;= 0">
+                and s.update_id = #{condition.updateId}
+            </if>
+            <if test="condition.creatorCardId != null and !condition.creatorCardId.isBlank()">
+                and sc.card_id = #{condition.creatorCardId}
+            </if>
+            <if test="condition.updaterCardId != null and !condition.updaterCardId.isBlank()">
+                and su.card_id = #{condition.updaterCardId}
+            </if>
+            and s.is_deleted = 0
+        </where>
+    </select>
 
 </mapper>

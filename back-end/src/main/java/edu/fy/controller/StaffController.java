@@ -1,6 +1,7 @@
 package edu.fy.controller;
 
 import edu.fy.entity.Staff;
+import edu.fy.entity.dto.StaffQueryConditionDTO;
 import edu.fy.entity.dto.StaffSaveDTO;
 import edu.fy.entity.dto.StaffUpdateDTO;
 import edu.fy.service.StaffService;
@@ -9,12 +10,11 @@ import edu.fy.utils.CustomException;
 import edu.fy.utils.Result;
 import edu.fy.utils.ResultCode;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author YangAo
@@ -22,11 +22,12 @@ import org.springframework.web.bind.annotation.RestController;
  * @create 2022-05-28 10:54
  */
 @RestController
-@Tag(name = "人员信息Controller", description = "人员信息管理")
+@Tag(name = "人员信息 Controller", description = "人员信息管理")
 public class StaffController {
 
     /**
      * 添加人员信息
+     *
      * @param staffSaveDTO 添加人员所需信息
      * @return 添加结果
      */
@@ -45,6 +46,7 @@ public class StaffController {
 
     /**
      * 更新人员信息
+     *
      * @param staffUpdateDTO 需要更新的人员id与具体信息
      * @return 更新情况
      */
@@ -57,11 +59,92 @@ public class StaffController {
             return Result.fail(e);
         } catch (Exception e) {
             e.printStackTrace();
-            return Result.fail(ResultCode.SYSTEM_ERROR, e);
+            return Result.fail(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    /**
+     * 根据id删除人员信息
+     *
+     * @param id 要删除的人员的id
+     * @return 删除情况
+     */
+    @DeleteMapping("/staff/delete-one/{id}")
+    @Operation(summary = "根据id删除人员信息")
+    public Result<?> deleteStaffById(@PathVariable("id") @Parameter(description = "要删除的人员id", required = true) Integer id) {
+        try {
+            return Result.success(staffService.removeById(id));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.fail(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    /**
+     * 查询全部人员信息的全部信息
+     *
+     * @return 查询到的信息
+     */
+    @GetMapping("/staff/query-all")
+    @Operation(summary = "查询全部人员信息的全部信息")
+    public Result<?> queryAll() {
+        try {
+            return Result.success(staffService.searchStaffByCondition(null).getRecords());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.fail(ResultCode.SYSTEM_ERROR);
         }
     }
 
 
+    /**
+     * 根据id查找人员信息
+     *
+     * @param id 人员id
+     * @return 查询到的信息
+     */
+    @GetMapping("/staff/query-one/{id}")
+    @Operation(description = "根据id查找人员信息")
+    public Result<?> queryOne(@PathVariable("id") @Parameter(description = "要查找人员的id", required = true) Integer id) {
+        // 整合信息
+        StaffQueryConditionDTO conditionDTO = new StaffQueryConditionDTO();
+        conditionDTO.setId(id);
+        // 调用service
+        try {
+            return Result.success(staffService.searchStaffByCondition(conditionDTO));
+        } catch (CustomException e) {
+            return Result.fail(e);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.fail(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    /**
+     * 根据多种条件查找人员信息
+     * @param condition 条件信息
+     * @return 查询到的信息结果
+     */
+    @PostMapping("/staff/query")
+    @Operation(description = "根据多种条件查找人员信息")
+    public Result<?> queryByCondition(@RequestBody @Validated StaffQueryConditionDTO condition) {
+        try {
+            return Result.success(staffService.searchStaffByCondition(condition));
+        } catch (CustomException e) {
+            return Result.fail(e);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.fail(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
     @Autowired
     private StaffService staffService;
 }
+/* catch (CustomException e) {
+            return Result.fail(e);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.fail(ResultCode.SYSTEM_ERROR);
+        }
+*/

@@ -1,6 +1,7 @@
 package edu.fy.entity.enums;
 
 import com.baomidou.mybatisplus.annotation.IEnum;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -13,6 +14,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum SexEnum implements IEnum<Integer> {
     /**
      * 男
@@ -31,4 +33,5 @@ public enum SexEnum implements IEnum<Integer> {
      * 对应描述
      */
     private final String desc;
+
 }

@@ -8,6 +8,7 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
 import java.util.Date;
 
@@ -46,7 +47,7 @@ public class StaffSaveDTO {
      * 联系电话
      */
     @NotNull
-    @Pattern(regexp = "^1[3-9]\\d{9}$", message = "手机号格式有误")
+    @Pattern(regexp = "^1(3\\d|4[5-9]|5[0-35-9]|6[2567]|7[0-8]|8\\d|9[0-35-9])\\d{8}$", message = "手机号格式有误")
     @Schema(description = "联系电话")
     private String phone;
 
@@ -54,7 +55,7 @@ public class StaffSaveDTO {
      * 身份证号
      */
     @NotNull
-    @Pattern(regexp = "^[1-9]\\d{5}(18|19|20)\\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\\d{3}[\\dXx]$", message = "身份证号格式错误")
+    @Pattern(regexp = "^[1-9]\\d{5}[1-9]\\d{3}((0\\d)|(1[0-2]))(([012]\\d)|3[0-1])\\d{3}(\\d|[Xx])$", message = "身份证号格式错误")
     @Schema(description = "身份证号")
     private String cardId;
 
@@ -70,6 +71,7 @@ public class StaffSaveDTO {
      * 出生日期
      */
     @NotNull
+    @Past
     @Schema(description = "出生日期")
     private Date birthDate;
 

@@ -1,7 +1,7 @@
 package edu.fy.mapper;
 
-import edu.fy.entity.Duty;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import edu.fy.entity.Duty;
 
 /**
 * @author YangAo
