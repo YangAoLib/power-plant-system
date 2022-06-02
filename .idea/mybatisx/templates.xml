@@ -64,16 +64,12 @@
             <option name="tableUIInfoList">
               <list>
                 <TableUIInfo>
-                  <option name="className" value="Duty" />
-                  <option name="tableName" value="duty" />
+                  <option name="className" value="StaffDuty" />
+                  <option name="tableName" value="staff_duty" />
                 </TableUIInfo>
                 <TableUIInfo>
-                  <option name="className" value="Office" />
-                  <option name="tableName" value="office" />
-                </TableUIInfo>
-                <TableUIInfo>
-                  <option name="className" value="Staff" />
-                  <option name="tableName" value="staff" />
+                  <option name="className" value="StaffOffice" />
+                  <option name="tableName" value="staff_office" />
                 </TableUIInfo>
               </list>
             </option>

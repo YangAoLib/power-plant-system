@@ -10,7 +10,7 @@ import edu.fy.entity.vo.StaffQueryWithCreatorAndUpdaterVO;
 import edu.fy.mapper.StaffMapper;
 import edu.fy.service.StaffService;
 import edu.fy.utils.BeanUtil;
-import edu.fy.utils.CustomException;
+import edu.fy.utils.CustomServiceException;
 import edu.fy.utils.ResultCode;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -36,11 +36,11 @@ public class StaffServiceImpl extends ServiceImpl<StaffMapper, Staff>
         staff.setPassword(passwordEncoder.encode(staff.getPassword()));
         // 身份证号不能重复, 先查询有无对应的身份证号, 再进行操作
         if (new LambdaQueryChainWrapper<>(baseMapper).eq(Staff::getCardId, staff.getCardId()).list().size() > 0) {
-            throw new CustomException("身份证号重复", ResultCode.USER_IS_EXISTED);
+            throw new CustomServiceException("身份证号重复", ResultCode.USER_IS_EXISTED);
         }
         // 手机号不能重复
         if (new LambdaQueryChainWrapper<>(baseMapper).eq(Staff::getPhone, staff.getPhone()).list().size() > 0) {
-            throw new CustomException("手机号重复", ResultCode.USER_IS_EXISTED);
+            throw new CustomServiceException("手机号重复", ResultCode.USER_IS_EXISTED);
         }
         return save(staff);
     }
@@ -48,12 +48,14 @@ public class StaffServiceImpl extends ServiceImpl<StaffMapper, Staff>
     @Override
     public Boolean updateStaff(Staff staff) {
         // id 不能为空
-        if (staff.getId() == null)
-            throw new CustomException("id不能为空", ResultCode.PARAM_IS_INVALID);
+        if (staff.getId() == null) {
+            throw new CustomServiceException("id不能为空", ResultCode.PARAM_IS_INVALID);
+        }
         // 密码不为空, 则进行加密后再用于更新
         String password = staff.getPassword();
-        if (StringUtils.hasText(password))
+        if (StringUtils.hasText(password)) {
             staff.setPassword(passwordEncoder.encode(password));
+        }
         // 根据id进行人员信息更新
         return updateById(staff);
     }
@@ -75,8 +77,9 @@ public class StaffServiceImpl extends ServiceImpl<StaffMapper, Staff>
         if ((id = condition.getId()) != null && id != 0) {
             StaffQueryWithCreatorAndUpdaterVO vo = null;
             // 如果根据id没有查到对应的信息则报错, 参数错误
-            if ((vo = BeanUtil.copyBean(baseMapper.selectById(id), StaffQueryWithCreatorAndUpdaterVO.class)) == null)
-                throw new CustomException("id对应的数据不存在", ResultCode.PARAM_IS_INVALID);
+            if ((vo = BeanUtil.copyBean(baseMapper.selectById(id), StaffQueryWithCreatorAndUpdaterVO.class)) == null) {
+                throw new CustomServiceException("id对应的数据不存在", ResultCode.PARAM_IS_INVALID);
+            }
             // 正常获取后, 进行操作
             List<StaffQueryWithCreatorAndUpdaterVO> voOne = Collections.singletonList(vo);
             voOne = findAndAddCreatorAndUpdater(voOne);
@@ -86,8 +89,9 @@ public class StaffServiceImpl extends ServiceImpl<StaffMapper, Staff>
         // 如果有分页要求, 则进行分页, 否则单页大小为最大Long
         Integer current = condition.getCurrentPage();
         Integer size = condition.getPageSize();
-        if (size != null && current != null && size != 0 && current != 0)
+        if (size != null && current != null && size != 0 && current != 0) {
             page = new Page<>(current, size);
+        }
         return baseMapper.searchAllByCondition(condition, page);
     }
 
@@ -98,17 +102,20 @@ public class StaffServiceImpl extends ServiceImpl<StaffMapper, Staff>
      */
     private List<StaffQueryWithCreatorAndUpdaterVO> findAndAddCreatorAndUpdater(List<StaffQueryWithCreatorAndUpdaterVO> vos) {
         // 列表为空则返回null
-        if (CollectionUtils.isEmpty(vos))
+        if (CollectionUtils.isEmpty(vos)) {
             return new ArrayList<>();
+        }
         // 查找创建者和更新者信息
         for (StaffQueryWithCreatorAndUpdaterVO vo : vos) {
             Integer createId = null;
             Integer updateId = null;
             // 只有对应的id不为空时才进行信息查找
-            if ((createId = vo.getCreateId()) != null)
+            if ((createId = vo.getCreateId()) != null) {
                 vo.setCreator(BeanUtil.copyBean(baseMapper.searchOneById(createId), StaffBaseWithDeletedDTO.class));
-            if ((updateId = vo.getUpdateId()) != null)
+            }
+            if ((updateId = vo.getUpdateId()) != null) {
                 vo.setUpdater(BeanUtil.copyBean(baseMapper.searchOneById(updateId), StaffBaseWithDeletedDTO.class));
+            }
         }
         return vos;
     }
