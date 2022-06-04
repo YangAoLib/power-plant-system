@@ -21,11 +21,12 @@
         <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
     </resultMap>
 
-    <resultMap id="staffQueryWithCreatorAndUpdaterVOMap" type="staffQueryWithCreatorAndUpdaterVO" autoMapping="true">
+    <resultMap id="staffQueryWithCreatorAndUpdaterVOMap" type="StaffQueryWithCreatorUpdaterDutyOfficeVO"
+               autoMapping="true">
         <association property="creator" autoMapping="true" columnPrefix="c_"
-                     javaType="staffBaseWithDeletedDTO"/>
+                     javaType="StaffBaseDeletedDTO"/>
         <association property="updater" autoMapping="true" columnPrefix="u_"
-                     javaType="staffBaseWithDeletedDTO"/>
+                     javaType="StaffBaseDeletedDTO"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -73,10 +74,18 @@
         su.phone u_phone,
         su.card_id u_card_id,
         su.status u_status,
-        su.is_deleted u_is_deleted
+        su.is_deleted u_is_deleted,
+        d.id d_id,
+        d.name d_name,
+        f.id f_id,
+        f.name f_name
         from staff s
         left join staff sc on sc.id = s.create_id
         left join staff su on su.id = s.update_id
+        left join staff_duty sd on sd.staff_id = s.id
+        left join staff_office sf on sf.staff_id = s.id
+        left join duty d on d.id = sd.duty_id
+        left join office f on f.id = sf.office_id
         <where>
             <if test="condition.name != null and !condition.name.isBlank()">
                 and s.name like concat('%', #{condition.name}, '%')

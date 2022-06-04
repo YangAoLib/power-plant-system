@@ -19,7 +19,9 @@ export default {
   components: { MyMenuItem },
   data () {
     return {
+      // 菜单项的前置路由名称
       parentName: '',
+      // 菜单项的前置路径
       parentPath: '',
       /*
       path: 不能以 / 开头
@@ -32,12 +34,15 @@ export default {
     }
   },
   created () {
+    // 获取路由信息
     this.parentName = this.$store.state.menuParentName
     this.parentPath = this.$store.state.menuPrefix
     this.items = this.$store.state.menuList
+    // 如果进入的是主页则对路由进行初始化操作
     if (this.$route.name === this.parentName) this.myAddRoute()
   },
   methods: {
+    // 添加路由操作
     myAddRoute () {
       // TODO: 路由操作 需要更改到登录操作之后
       // 重置路由

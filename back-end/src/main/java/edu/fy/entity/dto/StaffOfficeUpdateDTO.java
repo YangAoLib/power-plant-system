@@ -1,7 +1,10 @@
 package edu.fy.entity.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -14,6 +17,9 @@ import java.util.List;
  */
 @Schema(description = "人员与科室关系更新类")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class StaffOfficeUpdateDTO {
 
     /**

@@ -29,7 +29,11 @@ public enum ResultCode implements BaseErrorInfoInterface {
     /**
      * 业务逻辑错误
      */
-    LOGICAL_ERROR(2000, "业务逻辑错误");
+    LOGICAL_ERROR(2000, "业务逻辑错误"),
+    /**
+     * 数据库错误
+     */
+    DATABASE_ERROR(5000, "数据库错误");
     private final Integer status;
     private final String message;
 

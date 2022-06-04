@@ -1,14 +1,15 @@
 <template>
+  <!-- 基础的人员信息表单 -->
   <el-form ref="staffForm" :model="staffInfo" :rules="update ? updateRules : rules" label-width="100px"
            style="width: 600px">
     <el-form-item label="姓名" prop="name">
-      <el-input v-model.trim="staffInfo.name"/>
+      <el-input v-model.trim="staffInfo.name" placeholder="请输入姓名" :maxlength="255" show-word-limit/>
     </el-form-item>
     <el-form-item label="密码" prop="password">
-      <el-input v-model.trim="staffInfo.password" type="password"/>
+      <el-input v-model.trim="staffInfo.password" type="password" placeholder="请输入密码" show-password :maxlength="20" show-word-limit/>
     </el-form-item>
     <el-form-item label="确认密码" prop="checkPassword">
-      <el-input v-model.trim="staffInfo.checkPassword" type="password"/>
+      <el-input v-model.trim="staffInfo.checkPassword" type="password" placeholder="请输入确认密码" show-password :maxlength="20" show-word-limit/>
     </el-form-item>
     <el-form-item label="性别" prop="sex">
       <el-radio-group v-model="staffInfo.sex">
@@ -17,18 +18,19 @@
       </el-radio-group>
     </el-form-item>
     <el-form-item label="联系电话" prop="phone">
-      <el-input v-model.trim="staffInfo.phone"/>
+      <el-input v-model.trim="staffInfo.phone" placeholder="请输入联系电话" :maxlength="13" show-word-limit/>
     </el-form-item>
     <el-form-item label="身份证号" prop="cardId">
-      <el-input v-model="staffInfo.cardId"/>
+      <el-input v-model="staffInfo.cardId" placeholder="请输入身份证号" :maxlength="18" show-word-limit/>
     </el-form-item>
     <el-form-item label="祖籍" prop="originalHome">
-      <el-input v-model="staffInfo.originalHome"/>
+      <el-input v-model="staffInfo.originalHome" placeholder="请输入祖籍" :maxlength="255" show-word-limit/>
     </el-form-item>
     <el-form-item label="出生日期" prop="birthDate">
       <el-date-picker
         v-model="staffInfo.birthDate"
         type="date"
+        style="width: 100%"
         placeholder="选择出生日期"/>
     </el-form-item>
     <el-form-item label="在职状态" prop="status">
@@ -48,15 +50,21 @@
 import clone from 'clone'
 import { CARD_ID_REGEXP, PHONE_REGEXP } from '@/utils/regexp-const'
 
+/**
+ * 可用于添加和更新操作
+ */
 export default {
   name: 'StaffForm',
   props: {
+    // 是否用于更新
     update: {
       type: Boolean,
       default: false
     },
+    // 前置人员信息
     info: {
       type: Object,
+      // 默认都为空
       default: () => {
         return {
           name: '',
@@ -75,7 +83,9 @@ export default {
   emits: ['submit', 'update'],
   data () {
     return {
+      // 人员信息, 从传递进来的数据进行克隆
       staffInfo: clone(this.info),
+      // 表单验证规则
       rules: {
         name: [{
           required: true,
@@ -145,6 +155,10 @@ export default {
       },
       updateRules: {
         name: [{
+          required: true,
+          message: '请输入姓名',
+          trigger: 'blur'
+        }, {
           max: 255,
           message: '人员姓名长度不能超过255个字符',
           trigger: 'blur'
@@ -163,6 +177,10 @@ export default {
           trigger: 'blur'
         }],
         phone: [{
+          required: true,
+          message: '请输入手机号',
+          trigger: 'blur'
+        }, {
           validator: this.validatePhoneUpdate,
           trigger: 'blur'
         }],
@@ -199,6 +217,7 @@ export default {
     }
   },
   created () {
+    // 获取性别和在职状态的枚举类
     this.getSexEnums()
     this.getStatusEnums()
     // 确认是使用 创建者id 还是 更新者id
@@ -207,7 +226,6 @@ export default {
     } else {
       this.staffInfo.createId = JSON.parse(localStorage.getItem('userId'))
     }
-    console.log(this.staffInfo)
   },
   methods: {
     /**
@@ -277,7 +295,7 @@ export default {
     },
 
     /**
-     * 更新验证密码
+     * 更新, 验证密码
      */
     validatePasswordUpdate (rule, value, callback) {
       if (value !== '' && this.staffInfo.checkPassword !== '') {
@@ -288,7 +306,7 @@ export default {
       }
     },
     /**
-     * 更新验证确认密码
+     * 更新, 验证确认密码
      */
     validateCheckPasswordUpdate (rule, value, callback) {
       // 主密码不为空才进行判断
@@ -303,7 +321,7 @@ export default {
       }
     },
     /**
-     * 更新验证手机号
+     * 更新, 验证手机号
      */
     validatePhoneUpdate (rule, value, callback) {
       if (value === null || value === '') {
@@ -315,12 +333,13 @@ export default {
       }
     },
     /**
-     * 更新验证身份证号
+     * 更新, 验证身份证号
      */
     validateCardIdUpdate (rule, value, callback) {
       if (value === null || value === '') {
         callback(new Error('请输入身份证号'))
       } else if (!CARD_ID_REGEXP.test(this.staffInfo.cardId)) {
+        // 使用统一的全局正则进行验证
         callback(new Error('身份证号格式错误'))
       } else {
         callback()

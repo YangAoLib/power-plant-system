@@ -1,8 +1,9 @@
 <template>
   <div id="staff-find">
+    <div><el-button type="primary" @click="dialogStaffConditionVisible = true">多条件查询</el-button></div>
     <el-table
       :data="tableData"
-      style="width: 100%" height="600px">
+      style="width: 100%" height="540px">
       <el-table-column type="index"/>
       <el-table-column prop="name" label="姓名"/>
       <el-table-column prop="sex.desc" label="性别" width="50px"/>
@@ -15,7 +16,7 @@
       <el-table-column prop="creator" label="创建者">
         <template #default="{row}">
           <template v-if="row.creator">
-            <el-popover title="创建者信息" placement="left" width="200px">
+            <el-popover title="创建者信息" placement="left" width="200px" trigger="hover">
               <template #reference>
                 <el-button type="text" size="medium">{{ row.creator.name }}</el-button>
               </template>
@@ -32,7 +33,7 @@
       <el-table-column prop="updater" label="更新者">
         <template #default="{row}">
           <template v-if="row.updater">
-            <el-popover title="更新者信息" placement="left" width="200px">
+            <el-popover title="更新者信息" placement="left" width="200px" trigger="hover">
               <template #reference>
                 <el-button type="text" size="medium">{{ row.updater.name }}</el-button>
               </template>
@@ -67,76 +68,79 @@
       layout="total, sizes, prev, pager, next, jumper"
       :total="page.total">
     </el-pagination>
+    <el-dialog title="多条件查询操作" :visible.sync="dialogStaffConditionVisible" @close="conditionDialogClose">
+      <el-form ref="conditionForm" :model="condition" :rules="conditionRules" style="width: 85%;" label-width="120px">
+        <el-form-item label="姓名" prop="name">
+          <el-input v-model.trim="nameStringNull" :maxlength="255" show-word-limit/>
+        </el-form-item>
+        <el-form-item label="性别" prop="sex">
+          <el-radio-group v-model="condition.sex">
+            <el-radio-button v-for="(item, index) in sex" :key="index" :label="item.value">{{
+                item.desc
+              }}
+            </el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="联系电话" prop="phone">
+          <el-input v-model.trim="phoneStringNull" :maxlength="13" show-word-limit/>
+        </el-form-item>
+        <el-form-item label="身份证号" prop="cardId">
+          <el-input v-model="cardIdStringNull" :maxlength="18" show-word-limit/>
+        </el-form-item>
+        <el-form-item label="祖籍" prop="originalHome">
+          <el-input v-model="condition.originalHome" :maxlength="255" show-word-limit/>
+        </el-form-item>
+        <el-form-item label="在职状态" prop="status">
+          <el-radio-group v-model="condition.status">
+            <el-radio-button v-for="(item, index) in status" :key="index" :label="item.value">{{ item.desc }}
+            </el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="出生日期" prop="birthDateRange">
+          <el-date-picker
+            v-model="birthDateRange"
+            type="daterange"
+            style="width: 100%"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="创建时间" prop="createTimeRange">
+          <el-date-picker
+            v-model="createTimeRange"
+            type="datetimerange"
+            style="width: 100%"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="更新时间" prop="updateTimeRange">
+          <el-date-picker
+            v-model="updateTimeRange"
+            type="datetimerange"
+            style="width: 100%"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="创建者身份证号" prop="creatorCardId">
+          <el-input v-model="creatorCardIdStringNull" :maxlength="18" show-word-limit/>
+        </el-form-item>
+        <el-form-item label="更新者身份证号" prop="updaterCardId">
+          <el-input v-model="updaterCardIdStringNull" :maxlength="18" show-word-limit/>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="conditionOnSubmit">查询</el-button>
+          <el-button @click="$refs.conditionForm.resetFields()">清空表单</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
     <el-dialog title="更新人员信息" :visible.sync="dialogStaffUpdateVisible">
       <staff-form update :info="updateForm" @submit="updateStaff" style="width: 100%"></staff-form>
     </el-dialog>
-    <el-form ref="conditionForm" :model="condition" :rules="conditionRules" style="width: 50%;margin-top: 30px" label-width="120px">
-      <el-form-item label="姓名" prop="name">
-        <el-input v-model.trim="condition.name"/>
-      </el-form-item>
-      <el-form-item label="性别" prop="sex">
-        <el-radio-group v-model="condition.sex">
-          <el-radio-button v-for="(item, index) in sex" :key="index" :label="item.value">{{
-              item.desc
-            }}
-          </el-radio-button>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="联系电话" prop="phone">
-        <el-input v-model.trim="condition.phone"/>
-      </el-form-item>
-      <el-form-item label="身份证号" prop="cardId">
-        <el-input v-model="condition.cardId"/>
-      </el-form-item>
-      <el-form-item label="祖籍" prop="originalHome">
-        <el-input v-model="condition.originalHome"/>
-      </el-form-item>
-      <el-form-item label="在职状态" prop="status">
-        <el-radio-group v-model="condition.status">
-          <el-radio-button v-for="(item, index) in status" :key="index" :label="item.value">{{ item.desc }}
-          </el-radio-button>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="出生日期" prop="birthDateRange">
-        <el-date-picker
-          v-model="birthDateRange"
-          type="daterange"
-          align="right"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="创建时间" prop="createTimeRange">
-        <el-date-picker
-          v-model="createTimeRange"
-          type="datetimerange"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="更新时间" prop="updateTimeRange">
-        <el-date-picker
-          v-model="updateTimeRange"
-          type="datetimerange"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="创建者身份证号" prop="creatorCardId">
-        <el-input v-model="condition.creatorCardId"/>
-      </el-form-item>
-      <el-form-item label="更新者身份证号" prop="updaterCardId">
-        <el-input v-model="condition.updaterCardId"/>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="conditionOnSubmit">查询</el-button>
-        <el-button @click="$refs.conditionForm.resetFields()">清空表单</el-button>
-      </el-form-item>
-    </el-form>
-
   </div>
 </template>
 
@@ -145,6 +149,7 @@ import moment from 'moment'
 import clone from 'clone'
 import StaffForm from '@/components/staff/StaffForm'
 import { CARD_ID_REGEXP, PHONE_REGEXP } from '@/utils/regexp-const'
+import { isBlank } from '@/utils/string-utils'
 
 // 格式化 dateRange
 const commonDateRange = (prop) => ({
@@ -153,6 +158,16 @@ const commonDateRange = (prop) => ({
   },
   set (value) {
     this.commonDateRangeSet(value, prop)
+  }
+})
+
+// 格式化 String, 针对null值进行处理
+const commonStringNull = (prop) => ({
+  get () {
+    return this.commonStringNullGet(prop)
+  },
+  set (value) {
+    this.commonStringNullSet(value, prop)
   }
 })
 
@@ -214,7 +229,10 @@ export default {
       page: {
         total: 0
       },
+      // 人员信息更新弹窗控制
       dialogStaffUpdateVisible: false,
+      // 多条件查询弹窗控制
+      dialogStaffConditionVisible: false,
       updateForm: {},
       sex: [],
       status: [],
@@ -223,10 +241,16 @@ export default {
     }
   },
   created () {
+    // 创建条件缓存, 让翻页更符合逻辑
     this.conditionTemp = clone(this.condition)
+    // 获取数据
     this.getStaffInfoList()
+    // 获取性别与在职状态枚举信息
     this.getSexEnums()
     this.getStatusEnums()
+
+    // test
+    // console.log(isBlank('yangao'))
   },
   methods: {
     /**
@@ -281,7 +305,9 @@ export default {
      * @param value 新的页面大小
      */
     sizeChange (value) {
+      // 两个条件的页面大小同步更新
       this.condition.pageSize = value
+      this.conditionTemp.pageSize = value
       this.getStaffInfoList()
     },
     /**
@@ -289,7 +315,9 @@ export default {
      * @param value 新的页码
      */
     currentChange (value) {
+      // 两个条件的当前页数同步更新
       this.condition.currentPage = value
+      this.conditionTemp.currentPage = value
       this.getStaffInfoList()
     },
     /**
@@ -377,11 +405,14 @@ export default {
      * @param prop 属性名前缀
      */
     commonDateRangeSet (value, prop) {
+      // 默认值为空
       let start = ''
       let end = ''
+      // 从传进来的参数中获取值
       if (value !== null) {
         [start, end] = value
       }
+      // 赋值
       this.condition[`${prop}Start`] = start
       this.condition[`${prop}End`] = end
     },
@@ -394,11 +425,33 @@ export default {
       return [this.condition[`${prop}Start`], this.condition[`${prop}End`]]
     },
     /**
+     * 字符串通用设置, 当字符串为空时则将其值设为null
+     * @param value 更新的值
+     * @param prop 字符串在表单对象中的属性名
+     */
+    commonStringNullSet (value, prop) {
+      this.condition[prop] = isBlank(value) ? null : value
+    },
+    /**
+     * 字符串通用获取, 根据字符串是否为空返回不同的值
+     * @param prop 字符串在表单对象中的属性名
+     * @returns {string|*} 返回的内容
+     */
+    commonStringNullGet (prop) {
+      // 要返回的数据
+      const temp = this.condition[prop]
+      // 判断是否为空, 再进行返回
+      return isBlank(temp) ? '' : temp
+    },
+    /**
      * 条件克隆, 并进行查询
      */
     conditionOnSubmit () {
+      // 复制条件进行查询
       this.conditionTemp = clone(this.condition)
       this.getStaffInfoList()
+      // 关闭弹窗
+      this.dialogStaffConditionVisible = false
     },
     /**
      * 验证身份证号
@@ -424,12 +477,24 @@ export default {
       } else {
         callback()
       }
+    },
+    /**
+     * 多条件查询的弹窗关闭
+     */
+    conditionDialogClose () {
+      // 表单中的条件与实际用于查询的条件进行同步
+      this.condition = clone(this.conditionTemp)
     }
   },
   computed: {
     birthDateRange: commonDateRange('birthDate'),
     createTimeRange: commonDateRange('createTime'),
-    updateTimeRange: commonDateRange('updateTime')
+    updateTimeRange: commonDateRange('updateTime'),
+    nameStringNull: commonStringNull('name'),
+    phoneStringNull: commonStringNull('phone'),
+    cardIdStringNull: commonStringNull('cardId'),
+    creatorCardIdStringNull: commonStringNull('creatorCardId'),
+    updaterCardIdStringNull: commonStringNull('updaterCardId')
   }
 }
 </script>

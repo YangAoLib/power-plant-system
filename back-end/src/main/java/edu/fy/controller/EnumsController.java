@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * @author YangAo
  * @Description 返回各个枚举类
@@ -22,19 +25,19 @@ public class EnumsController {
 
     @GetMapping("/deleted")
     @Operation(summary = "逻辑删除位")
-    public Result<?> deletedEnums() {
-        return Result.success(DeletedEnum.values());
+    public Result<List<DeletedEnum>> deletedEnums() {
+        return Result.success(Arrays.asList(DeletedEnum.values()));
     }
 
     @GetMapping("/sex")
     @Operation(summary = "性别")
-    public Result<?> sexEnums() {
-        return Result.success(SexEnum.values());
+    public Result<List<SexEnum>> sexEnums() {
+        return Result.success(Arrays.asList(SexEnum.values()));
     }
 
     @GetMapping("/status")
     @Operation(summary = "在职状态")
-    public Result<?> StatusEnums() {
-        return Result.success(StatusEnum.values());
+    public Result<List<StatusEnum>> statusEnums() {
+        return Result.success(Arrays.asList(StatusEnum.values()));
     }
 }

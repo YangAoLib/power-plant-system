@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
 @Schema(description = "人员基础信息, 带有删除位")
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class StaffBaseWithDeletedDTO extends StaffBaseDTO{
+public class StaffBaseDeletedDTO extends StaffBaseDTO{
 
     @Schema(description = "逻辑删除位: 0-未删除, 1-已删除")
     private DeletedEnum isDeleted;

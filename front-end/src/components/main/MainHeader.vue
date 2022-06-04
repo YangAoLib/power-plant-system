@@ -6,6 +6,7 @@
         <el-button type="primary">
           个人中心<i class="el-icon-arrow-down el-icon--right"></i>
         </el-button>
+        <!-- 右侧下拉菜单 -->
         <el-dropdown-menu slot="dropdown"><!--style="text-align: center"-->
           <el-dropdown-item icon="el-icon-user">个人信息</el-dropdown-item>
           <el-dropdown-item icon="el-icon-setting">设置</el-dropdown-item>

@@ -101,10 +101,10 @@ fabric.properties
 #
 # Recommended template: Node.gitignore
 
-# TODO: where does this rule come from?
+# 文档
 docs/_book
 
-# TODO: where does this rule come from?
+# 测试目录
 test/
 
 ### Node template

@@ -1,20 +1,20 @@
 package edu.fy.controller;
 
-import edu.fy.entity.Staff;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import edu.fy.entity.dto.*;
+import edu.fy.entity.vo.StaffQueryWithCreatorUpdaterDutyOfficeVO;
 import edu.fy.service.StaffDutyService;
 import edu.fy.service.StaffOfficeService;
 import edu.fy.service.StaffService;
-import edu.fy.utils.BeanUtil;
-import edu.fy.utils.CustomServiceException;
 import edu.fy.utils.Result;
-import edu.fy.utils.ResultCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author YangAo
@@ -28,39 +28,25 @@ public class StaffController {
     /**
      * 添加人员信息
      *
-     * @param staffSaveDTO 添加人员所需信息
+     * @param staffDutyOfficeSaveDTO 添加人员所需信息
      * @return 添加结果
      */
     @PostMapping("/staff/save-one")
-    @Operation(summary = "添加人员信息")
-    public Result<?> saveStaff(@RequestBody @Validated StaffSaveDTO staffSaveDTO) {
-        try {
-            return Result.success(staffService.saveStaff(BeanUtil.copyBean(staffSaveDTO, Staff.class)));
-        } catch (CustomServiceException e) {
-            return Result.fail(e);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Result.fail(ResultCode.SYSTEM_ERROR);
-        }
+    @Operation(summary = "添加人员、职务、科室信息")
+    public Result<Boolean> saveStaff(@RequestBody @Validated StaffDutyOfficeSaveDTO staffDutyOfficeSaveDTO) {
+        return Result.success(staffService.saveStaffAndDutyAndOffice(staffDutyOfficeSaveDTO));
     }
 
     /**
      * 更新人员信息
      *
-     * @param staffUpdateDTO 需要更新的人员id与具体信息
+     * @param staffDutyOfficeUpdateDTO 需要更新的人员id与具体信息
      * @return 更新情况
      */
     @PostMapping("/staff/update-one")
-    @Operation(summary = "更新人员信息")
-    public Result<?> updateStaff(@RequestBody @Validated StaffUpdateDTO staffUpdateDTO) {
-        try {
-            return Result.success(staffService.updateStaff(BeanUtil.copyBean(staffUpdateDTO, Staff.class)));
-        } catch (CustomServiceException e) {
-            return Result.fail(e);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Result.fail(ResultCode.SYSTEM_ERROR);
-        }
+    @Operation(summary = "更新人员、职务、科室信息")
+    public Result<Boolean> updateStaff(@RequestBody @Validated StaffDutyOfficeUpdateDTO staffDutyOfficeUpdateDTO) {
+        return Result.success(staffService.updateStaff(staffDutyOfficeUpdateDTO));
     }
 
     /**
@@ -71,13 +57,8 @@ public class StaffController {
      */
     @DeleteMapping("/staff/delete-one/{id}")
     @Operation(summary = "根据id删除人员信息")
-    public Result<?> deleteStaffById(@PathVariable("id") @Parameter(description = "要删除的人员id", required = true) Integer id) {
-        try {
-            return Result.success(staffService.removeById(id));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Result.fail(ResultCode.SYSTEM_ERROR);
-        }
+    public Result<Boolean> deleteStaffById(@PathVariable("id") @Parameter(description = "要删除的人员id", required = true) Integer id) {
+        return Result.success(staffService.removeById(id));
     }
 
     /**
@@ -87,13 +68,8 @@ public class StaffController {
      */
     @GetMapping("/staff/query-all")
     @Operation(summary = "查询全部人员信息的全部信息")
-    public Result<?> queryAll() {
-        try {
-            return Result.success(staffService.searchStaffByCondition(null).getRecords());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Result.fail(ResultCode.SYSTEM_ERROR);
-        }
+    public Result<List<StaffQueryWithCreatorUpdaterDutyOfficeVO>> queryAll() {
+        return Result.success(staffService.searchStaffByCondition(null).getRecords());
     }
 
 
@@ -104,20 +80,13 @@ public class StaffController {
      * @return 查询到的信息
      */
     @GetMapping("/staff/query-one/{id}")
-    @Operation(description = "根据id查找人员信息")
-    public Result<?> queryOne(@PathVariable("id") @Parameter(description = "要查找人员的id", required = true) Integer id) {
+    @Operation(summary = "根据id查找人员信息")
+    public Result<Page<StaffQueryWithCreatorUpdaterDutyOfficeVO>> queryOne(@PathVariable("id") @Parameter(description = "要查找人员的id", required = true) Integer id) {
         // 整合信息
         StaffQueryConditionDTO conditionDTO = new StaffQueryConditionDTO();
         conditionDTO.setId(id);
         // 调用service
-        try {
-            return Result.success(staffService.searchStaffByCondition(conditionDTO));
-        } catch (CustomServiceException e) {
-            return Result.fail(e);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Result.fail(ResultCode.SYSTEM_ERROR);
-        }
+        return Result.success(staffService.searchStaffByCondition(conditionDTO));
     }
 
     /**
@@ -127,16 +96,9 @@ public class StaffController {
      * @return 查询到的信息结果
      */
     @PostMapping("/staff/query")
-    @Operation(description = "根据多种条件查找人员信息")
-    public Result<?> queryByCondition(@RequestBody @Validated StaffQueryConditionDTO condition) {
-        try {
-            return Result.success(staffService.searchStaffByCondition(condition));
-        } catch (CustomServiceException e) {
-            return Result.fail(e);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Result.fail(ResultCode.SYSTEM_ERROR);
-        }
+    @Operation(summary = "根据多种条件查找人员信息")
+    public Result<Page<StaffQueryWithCreatorUpdaterDutyOfficeVO>> queryByCondition(@RequestBody @Validated StaffQueryConditionDTO condition) {
+        return Result.success(staffService.searchStaffByCondition(condition));
     }
 
     /**
