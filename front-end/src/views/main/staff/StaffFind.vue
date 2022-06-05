@@ -1,11 +1,93 @@
 <template>
   <div id="staff-find">
-    <div><el-button type="primary" @click="dialogStaffConditionVisible = true">多条件查询</el-button></div>
+    <!-- 条件查询列表-->
+    <div>
+      <el-form ref="conditionForm" :model="condition" :rules="conditionRules" :style="{width: staffAllConditionForm ? '85%' : '100%', display: staffAllConditionForm ? null : 'inline'}" :label-width="staffAllConditionForm ? '120px' : '70px'" :inline="!staffAllConditionForm">
+        <el-form-item label="姓名" prop="name">
+          <el-input v-model.trim="nameStringNull" :maxlength="30" show-word-limit/>
+        </el-form-item>
+        <el-form-item label="性别" prop="sex">
+          <el-radio-group v-model="condition.sex">
+            <el-radio-button v-for="(item, index) in sex" :key="index" :label="item.value">{{
+                item.desc
+              }}
+            </el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="联系电话" prop="phone">
+          <el-input v-model.trim="phoneStringNull" :maxlength="13" show-word-limit/>
+        </el-form-item>
+        <!-- 平时隐藏的查询条件 -->
+        <template v-if="staffAllConditionForm">
+          <el-form-item label="身份证号" prop="cardId">
+            <el-input v-model="cardIdStringNull" :maxlength="18" show-word-limit/>
+          </el-form-item>
+          <el-form-item label="祖籍" prop="originalHome">
+            <el-input v-model="condition.originalHome" :maxlength="255" show-word-limit/>
+          </el-form-item>
+          <el-form-item label="在职状态" prop="status">
+            <el-radio-group v-model="condition.status">
+              <el-radio-button v-for="(item, index) in status" :key="index" :label="item.value">{{ item.desc }}
+              </el-radio-button>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="出生日期" prop="birthDateRange">
+            <el-date-picker
+              v-model="birthDateRange"
+              type="daterange"
+              style="width: 100%"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="创建时间" prop="createTimeRange">
+            <el-date-picker
+              v-model="createTimeRange"
+              type="datetimerange"
+              style="width: 100%"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="更新时间" prop="updateTimeRange">
+            <el-date-picker
+              v-model="updateTimeRange"
+              type="datetimerange"
+              style="width: 100%"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="创建者身份证号" prop="creatorCardId">
+            <el-input v-model="creatorCardIdStringNull" :maxlength="18" show-word-limit/>
+          </el-form-item>
+          <el-form-item label="更新者身份证号" prop="updaterCardId">
+            <el-input v-model="updaterCardIdStringNull" :maxlength="18" show-word-limit/>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="conditionOnSubmit">查询</el-button>
+            <el-button @click="$refs.conditionForm.resetFields()">清空表单</el-button>
+            <el-button @click="staffAllConditionForm = false">收起</el-button>
+          </el-form-item>
+        </template>
+      </el-form>
+      <!-- 显示部分条件时 需要显示的内容-->
+      <template v-if="!staffAllConditionForm">
+        <el-button type="primary" @click="conditionOnSubmit">查询</el-button>
+        <el-button @click="staffAllConditionForm = true" >展开查询</el-button>
+      </template>
+    </div>
+    <!-- 数据展示表格-->
     <el-table
       :data="tableData"
-      style="width: 100%" height="540px">
+      style="width: 100%" height="520px" stripe border>
       <el-table-column type="index"/>
-      <el-table-column prop="name" label="姓名"/>
+      <el-table-column prop="name" label="姓名" fixed="left"/>
+      <el-table-column prop="dutyList" label="职务" :formatter="cellDutyOfficeArrayFormat" />
+      <el-table-column prop="officeList" label="科室" :formatter="cellDutyOfficeArrayFormat" />
       <el-table-column prop="sex.desc" label="性别" width="50px"/>
       <el-table-column prop="phone" label="联系电话" width="120px"/>
       <el-table-column prop="cardId" label="身份证号" width="200px"/>
@@ -30,7 +112,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="updateTime" label="更新时间" :formatter="cellDateTimeFormate" width="100px"/>
-      <el-table-column prop="updater" label="更新者">
+      <el-table-column prop="updater" label="更新者" width="100px">
         <template #default="{row}">
           <template v-if="row.updater">
             <el-popover title="更新者信息" placement="left" width="200px" trigger="hover">
@@ -46,10 +128,9 @@
           </template>
         </template>
       </el-table-column>
-      <el-table-column label="操作" fixed="right">
-        <template #default="{row}">
+      <el-table-column label="操作" fixed="right" width="140px" style="display: flex;justify-content: space-between">
+        <template #default="{row}" >
           <el-button type="primary" size="mini" @click="showUpdateStaff(row)">编辑</el-button>
-          <br/>
           <el-popconfirm
             title="确定删除吗？"
             @confirm="deleteStaffInfoById(row.id)"
@@ -59,6 +140,7 @@
         </template>
       </el-table-column>
     </el-table>
+    <!-- 分页 -->
     <el-pagination
       @size-change="sizeChange"
       @current-change="currentChange"
@@ -68,6 +150,7 @@
       layout="total, sizes, prev, pager, next, jumper"
       :total="page.total">
     </el-pagination>
+    <!-- 多条件查询弹窗 -->
     <el-dialog title="多条件查询操作" :visible.sync="dialogStaffConditionVisible" @close="conditionDialogClose">
       <el-form ref="conditionForm" :model="condition" :rules="conditionRules" style="width: 85%;" label-width="120px">
         <el-form-item label="姓名" prop="name">
@@ -138,6 +221,7 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+    <!-- 人员信息更新弹窗-->
     <el-dialog title="更新人员信息" :visible.sync="dialogStaffUpdateVisible">
       <staff-form update :info="updateForm" @submit="updateStaff" style="width: 100%"></staff-form>
     </el-dialog>
@@ -150,6 +234,7 @@ import clone from 'clone'
 import StaffForm from '@/components/staff/StaffForm'
 import { CARD_ID_REGEXP, PHONE_REGEXP } from '@/utils/regexp-const'
 import { isBlank } from '@/utils/string-utils'
+import { isEmpty } from '@/utils/array-utils'
 
 // 格式化 dateRange
 const commonDateRange = (prop) => ({
@@ -233,6 +318,8 @@ export default {
       dialogStaffUpdateVisible: false,
       // 多条件查询弹窗控制
       dialogStaffConditionVisible: false,
+      // 多条件的全部信息显示控制
+      staffAllConditionForm: false,
       updateForm: {},
       sex: [],
       status: [],
@@ -301,6 +388,26 @@ export default {
       }
     },
     /**
+     * 格式化表格内职务和科室数据信息
+     * @param row
+     * @param column
+     * @param cellValue 单元格内的数据
+     * @param index
+     */
+    cellDutyOfficeArrayFormat (row, column, cellValue, index) {
+      console.log(row, column, cellValue, index)
+      if (isEmpty(cellValue)) {
+        return `${column.label}暂无`
+      }
+      // 根据数组内容生成字符串
+      let temp = ''
+      for (let i = 0; i < cellValue.length; i++) {
+        temp += cellValue[i].name
+        if (i !== cellValue.length - 1) temp += '、'
+      }
+      return temp
+    },
+    /**
      * 页面大小变化时, 触发的事件
      * @param value 新的页面大小
      */
@@ -345,6 +452,8 @@ export default {
       const temp = clone(info)
       temp.sex = temp.sex.value
       temp.status = temp.status.value
+      temp.dutyIdList = temp.dutyList.map(item => item.id)
+      temp.officeIdList = temp.officeList.map(item => item.id)
       this.updateForm = temp
       console.log(temp)
       this.dialogStaffUpdateVisible = true
@@ -452,6 +561,8 @@ export default {
       this.getStaffInfoList()
       // 关闭弹窗
       this.dialogStaffConditionVisible = false
+      // 回缩展开的查询条件
+      if (this.staffAllConditionForm) this.staffAllConditionForm = false
     },
     /**
      * 验证身份证号

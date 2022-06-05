@@ -1,15 +1,17 @@
 <template>
   <!-- 基础的人员信息表单 -->
   <el-form ref="staffForm" :model="staffInfo" :rules="update ? updateRules : rules" label-width="100px"
-           style="width: 600px">
+           style="width: 600px" :inline="inline">
     <el-form-item label="姓名" prop="name">
-      <el-input v-model.trim="staffInfo.name" placeholder="请输入姓名" :maxlength="255" show-word-limit/>
+      <el-input v-model.trim="staffInfo.name" placeholder="请输入姓名" :maxlength="30" show-word-limit/>
     </el-form-item>
     <el-form-item label="密码" prop="password">
-      <el-input v-model.trim="staffInfo.password" type="password" placeholder="请输入密码" show-password :maxlength="20" show-word-limit/>
+      <el-input v-model.trim="staffInfo.password" type="password" placeholder="请输入密码(最多20个字)" show-password
+                :maxlength="20" show-word-limit/>
     </el-form-item>
     <el-form-item label="确认密码" prop="checkPassword">
-      <el-input v-model.trim="staffInfo.checkPassword" type="password" placeholder="请输入确认密码" show-password :maxlength="20" show-word-limit/>
+      <el-input v-model.trim="staffInfo.checkPassword" type="password" placeholder="请输入确认密码" show-password
+                :maxlength="20" show-word-limit/>
     </el-form-item>
     <el-form-item label="性别" prop="sex">
       <el-radio-group v-model="staffInfo.sex">
@@ -22,6 +24,16 @@
     </el-form-item>
     <el-form-item label="身份证号" prop="cardId">
       <el-input v-model="staffInfo.cardId" placeholder="请输入身份证号" :maxlength="18" show-word-limit/>
+    </el-form-item>
+    <el-form-item label="职务" prop="dutyIdList">
+      <el-select v-model="dutyIdListArray" placeholder="请选择职务" multiple filterable clearable>
+        <el-option v-for="(item, index) in duties" :key="index" :label="item.name" :value="item.id"></el-option>
+      </el-select>
+    </el-form-item>
+    <el-form-item label="科室" prop="officeIdList">
+      <el-select v-model="officeIdListArray" placeholder="请选择科室" multiple filterable clearable>
+        <el-option v-for="(item, index) in offices" :key="index" :label="item.name" :value="item.id"></el-option>
+      </el-select>
     </el-form-item>
     <el-form-item label="祖籍" prop="originalHome">
       <el-input v-model="staffInfo.originalHome" placeholder="请输入祖籍" :maxlength="255" show-word-limit/>
@@ -40,8 +52,8 @@
       </el-radio-group>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" @click="onSubmit"><span v-if="update">更新</span><span v-else>添加</span>人员信息</el-button>
-      <el-button @click="$refs.staffForm.resetFields()">清空表单</el-button>
+      <el-button type="primary" @click="onSubmit"><span v-if="update">更新</span><span v-else>上传</span>人员信息</el-button>
+      <el-button @click="$refs.staffForm.resetFields()">重置表单</el-button>
     </el-form-item>
   </el-form>
 </template>
@@ -49,6 +61,8 @@
 <script>
 import clone from 'clone'
 import { CARD_ID_REGEXP, PHONE_REGEXP } from '@/utils/regexp-const'
+import { SERVER_ERROR_MESSAGE } from '@/utils/string-utils'
+import { commonArrayEmptyNull } from '@/utils/common-computed'
 
 /**
  * 可用于添加和更新操作
@@ -75,9 +89,15 @@ export default {
           cardId: '',
           originalHome: '',
           birthDate: '',
-          status: 0
+          status: 0,
+          dutyIdList: [],
+          officeIdList: []
         }
       }
+    },
+    inline: {
+      type: Boolean,
+      default: false
     }
   },
   emits: ['submit', 'update'],
@@ -213,13 +233,19 @@ export default {
         }]
       },
       sex: [],
-      status: []
+      status: [],
+      duties: [],
+      offices: []
     }
   },
   created () {
     // 获取性别和在职状态的枚举类
     this.getSexEnums()
     this.getStatusEnums()
+    // 获取职务信息
+    this.getDuties()
+    // 获取科室信息
+    this.getOffices()
     // 确认是使用 创建者id 还是 更新者id
     if (this.update) {
       this.staffInfo.updateId = JSON.parse(localStorage.getItem('userId'))
@@ -229,28 +255,15 @@ export default {
   },
   methods: {
     /**
-     * 获取性别枚举信息
-     */
-    getSexEnums () {
-      this.axios.get('/enums/sex').then(res => {
-        this.sex = res.data
-      })
-    },
-    /**
-     * 获取在职状态枚举信息
-     */
-    getStatusEnums () {
-      this.axios.get('/enums/status').then(res => {
-        this.status = res.data
-      })
-    },
-    /**
      * 验证密码
      */
     validatePassword (rule, value, callback) {
       if (value === null || value === '') {
         callback(new Error('请输入密码'))
       } else {
+        // 长度不能超过20个字符
+        if (value.length > 20) callback(new Error('密码长度不能超过20个字符'))
+        // 如果确认密码不为空, 验证确认密码
         if (this.staffInfo.checkPassword !== '') {
           this.$refs.staffForm.validateField('checkPassword')
         }
@@ -293,7 +306,6 @@ export default {
         callback()
       }
     },
-
     /**
      * 更新, 验证密码
      */
@@ -301,6 +313,9 @@ export default {
       if (value !== '' && this.staffInfo.checkPassword !== '') {
         this.$refs.staffForm.validateField('checkPassword')
         callback()
+      } else if (value.length > 20) {
+        // 长度不能超过20个字符
+        callback(new Error('密码长度不能超过20个字符'))
       } else {
         callback()
       }
@@ -357,11 +372,64 @@ export default {
             form: this.$refs.staffForm
           })
         } else {
-          this.$message.error('表单参数错误')
           return false
         }
       })
+    },
+    /**
+     * 获取性别枚举信息
+     */
+    getSexEnums () {
+      this.axios.get('/enums/sex').then(res => {
+        this.sex = res.data
+      })
+    },
+    /**
+     * 获取在职状态枚举信息
+     */
+    getStatusEnums () {
+      this.axios.get('/enums/status').then(res => {
+        this.status = res.data
+      })
+    },
+    /**
+     * 获取职务信息
+     */
+    getDuties () {
+      this.axios.get('/duty/query-all').then(res => {
+        if (res.status === 200) {
+          // 获取全部的职务信息, 用于选项
+          this.duties = res.data
+        } else {
+          // 错误提示
+          console.log(res)
+          this.$message.error(SERVER_ERROR_MESSAGE)
+        }
+      }).catch(err => {
+        console.log(err)
+        this.$message.error(SERVER_ERROR_MESSAGE)
+      })
+    },
+    /**
+     * 获取科室信息
+     */
+    getOffices () {
+      this.axios.get('/office/query-all').then(res => {
+        if (res.status === 200) {
+          this.offices = res.data
+        } else {
+          console.log(res)
+          this.$message.error(SERVER_ERROR_MESSAGE)
+        }
+      }).catch(err => {
+        console.log(err)
+        this.$message.error(SERVER_ERROR_MESSAGE)
+      })
     }
+  },
+  computed: {
+    dutyIdListArray: commonArrayEmptyNull('dutyIdList', 'staffInfo'),
+    officeIdListArray: commonArrayEmptyNull('officeIdList', 'staffInfo')
   }
 }
 </script>

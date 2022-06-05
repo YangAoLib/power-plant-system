@@ -26,6 +26,8 @@ spring:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    # 自动映射
+    auto-mapping-behavior: full
   global-config:
     db-config:
       # 配置逻辑删除

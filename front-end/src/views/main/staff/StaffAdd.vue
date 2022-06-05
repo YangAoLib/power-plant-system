@@ -1,6 +1,6 @@
 <template>
   <div id="staff-add">
-    <staff-form class="form" @submit="onSubmit"></staff-form>
+    <staff-form style="width: 100%" @submit="onSubmit" inline></staff-form>
   </div>
 </template>
 
@@ -31,13 +31,7 @@ export default {
 
 <style scoped>
 #staff-add {
-  height: 620px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 100%;
 }
-/*.form {*/
-/*  margin-left: -100px;*/
-/*}*/
 
 </style>

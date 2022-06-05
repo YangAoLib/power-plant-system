@@ -21,12 +21,14 @@
         <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
     </resultMap>
 
-    <resultMap id="staffQueryWithCreatorAndUpdaterVOMap" type="StaffQueryWithCreatorUpdaterDutyOfficeVO"
-               autoMapping="true">
-        <association property="creator" autoMapping="true" columnPrefix="c_"
+    <resultMap id="staffQueryWithCreatorAndUpdaterVOMap" type="StaffQueryWithCreatorUpdaterDutyOfficeVO">
+        <id property="id" column="id"/>
+        <association property="creator" columnPrefix="c_"
                      javaType="StaffBaseDeletedDTO"/>
-        <association property="updater" autoMapping="true" columnPrefix="u_"
+        <association property="updater" columnPrefix="u_"
                      javaType="StaffBaseDeletedDTO"/>
+        <collection property="dutyList" columnPrefix="d_" ofType="dutyBaseDTO" />
+        <collection property="officeList" columnPrefix="f_" ofType="officeBaseDTO"/>
     </resultMap>
 
     <sql id="Base_Column_List">
