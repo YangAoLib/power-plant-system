@@ -2,72 +2,72 @@
   <div id="staff-find">
     <!-- 条件查询列表-->
     <div>
-      <el-form ref="conditionForm" :model="condition" :rules="conditionRules" :style="{width: staffAllConditionForm ? '85%' : '100%', display: staffAllConditionForm ? null : 'inline'}" :label-width="staffAllConditionForm ? '120px' : '70px'" :inline="!staffAllConditionForm">
-        <el-form-item label="姓名" prop="name">
-          <el-input v-model.trim="nameStringNull" :maxlength="30" show-word-limit/>
+      <el-form ref="conditionForm" :model="condition" :rules="conditionRules" :style="{width: '100%', display: staffAllConditionForm ? null : 'inline'}" :label-width="staffAllConditionForm ? '120px' : '70px'" inline>
+        <el-form-item label="姓名" prop="name" :class="{'form-item': staffAllConditionForm}">
+          <el-input v-model.trim="nameStringNull" :maxlength="30" show-word-limit style="width: 240px"/>
         </el-form-item>
-        <el-form-item label="性别" prop="sex">
+        <el-form-item label="性别" prop="sex" :class="{'form-item': staffAllConditionForm}">
           <el-radio-group v-model="condition.sex">
             <el-radio-button v-for="(item, index) in sex" :key="index" :label="item.value">{{
                 item.desc
               }}
             </el-radio-button>
           </el-radio-group>
-        </el-form-item>
-        <el-form-item label="联系电话" prop="phone">
-          <el-input v-model.trim="phoneStringNull" :maxlength="13" show-word-limit/>
+        </el-form-item >
+        <el-form-item label="联系电话" prop="phone" :class="{'form-item': staffAllConditionForm}">
+          <el-input v-model.trim="phoneStringNull" :maxlength="13" show-word-limit style="width: 240px"/>
         </el-form-item>
         <!-- 平时隐藏的查询条件 -->
         <template v-if="staffAllConditionForm">
-          <el-form-item label="身份证号" prop="cardId">
-            <el-input v-model="cardIdStringNull" :maxlength="18" show-word-limit/>
+          <el-form-item label="祖籍" prop="originalHome" :class="{'form-item': staffAllConditionForm}">
+            <el-input v-model="condition.originalHome" :maxlength="30" show-word-limit style="width: 240px"/>
           </el-form-item>
-          <el-form-item label="祖籍" prop="originalHome">
-            <el-input v-model="condition.originalHome" :maxlength="255" show-word-limit/>
+          <el-form-item label="身份证号" prop="cardId" :class="{'form-item': staffAllConditionForm}">
+            <el-input v-model="cardIdStringNull" :maxlength="18" show-word-limit style="width: 240px"/>
           </el-form-item>
-          <el-form-item label="在职状态" prop="status">
+          <el-form-item label="在职状态" prop="status" :class="{'form-item': staffAllConditionForm}">
             <el-radio-group v-model="condition.status">
               <el-radio-button v-for="(item, index) in status" :key="index" :label="item.value">{{ item.desc }}
               </el-radio-button>
             </el-radio-group>
-          </el-form-item>
-          <el-form-item label="出生日期" prop="birthDateRange">
+          </el-form-item >
+          <el-form-item label="出生日期" prop="birthDateRange" :class="{'form-item': staffAllConditionForm}">
             <el-date-picker
               v-model="birthDateRange"
               type="daterange"
-              style="width: 100%"
+              style="width: 240px"
               range-separator="至"
               start-placeholder="开始日期"
               end-placeholder="结束日期">
             </el-date-picker>
           </el-form-item>
-          <el-form-item label="创建时间" prop="createTimeRange">
+          <el-form-item label="创建时间" prop="createTimeRange" :class="{'form-item': staffAllConditionForm}">
             <el-date-picker
               v-model="createTimeRange"
               type="datetimerange"
-              style="width: 100%"
+              style="width: 240px"
               range-separator="至"
               start-placeholder="开始日期"
               end-placeholder="结束日期">
             </el-date-picker>
           </el-form-item>
-          <el-form-item label="更新时间" prop="updateTimeRange">
+          <el-form-item label="更新时间" prop="updateTimeRange" :class="{'form-item': staffAllConditionForm}">
             <el-date-picker
               v-model="updateTimeRange"
               type="datetimerange"
-              style="width: 100%"
+              style="width: 240px"
               range-separator="至"
               start-placeholder="开始日期"
               end-placeholder="结束日期">
             </el-date-picker>
           </el-form-item>
-          <el-form-item label="创建者身份证号" prop="creatorCardId">
-            <el-input v-model="creatorCardIdStringNull" :maxlength="18" show-word-limit/>
+          <el-form-item label="创建者身份证号" prop="creatorCardId" :class="{'form-item': staffAllConditionForm}">
+            <el-input v-model="creatorCardIdStringNull" :maxlength="18" show-word-limit style="width: 240px"/>
           </el-form-item>
-          <el-form-item label="更新者身份证号" prop="updaterCardId">
-            <el-input v-model="updaterCardIdStringNull" :maxlength="18" show-word-limit/>
+          <el-form-item label="更新者身份证号" prop="updaterCardId" :class="{'form-item': staffAllConditionForm}">
+            <el-input v-model="updaterCardIdStringNull" :maxlength="18" show-word-limit style="width: 240px"/>
           </el-form-item>
-          <el-form-item>
+          <el-form-item :id="staffAllConditionForm ? 'form-item-option-inline' : 'form-item-option'">
             <el-button type="primary" @click="conditionOnSubmit">查询</el-button>
             <el-button @click="$refs.conditionForm.resetFields()">清空表单</el-button>
             <el-button @click="staffAllConditionForm = false">收起</el-button>
@@ -84,7 +84,7 @@
     <el-table
       :data="tableData"
       style="width: 100%" height="520px" stripe border>
-      <el-table-column type="index"/>
+      <el-table-column type="index" fixed="left" :index="(index) => 1 + index + (condition.currentPage - 1) * condition.pageSize"/>
       <el-table-column prop="name" label="姓名" fixed="left"/>
       <el-table-column prop="dutyList" label="职务" :formatter="cellDutyOfficeArrayFormat" />
       <el-table-column prop="officeList" label="科室" :formatter="cellDutyOfficeArrayFormat" />
@@ -151,7 +151,7 @@
       :total="page.total">
     </el-pagination>
     <!-- 多条件查询弹窗 -->
-    <el-dialog title="多条件查询操作" :visible.sync="dialogStaffConditionVisible" @close="conditionDialogClose">
+    <el-dialog title="多条件查询操作" :visible.sync="dialogStaffConditionVisible" @close="conditionDialogClose" >
       <el-form ref="conditionForm" :model="condition" :rules="conditionRules" style="width: 85%;" label-width="120px">
         <el-form-item label="姓名" prop="name">
           <el-input v-model.trim="nameStringNull" :maxlength="255" show-word-limit/>
@@ -223,7 +223,7 @@
     </el-dialog>
     <!-- 人员信息更新弹窗-->
     <el-dialog title="更新人员信息" :visible.sync="dialogStaffUpdateVisible">
-      <staff-form update :info="updateForm" @submit="updateStaff" style="width: 100%"></staff-form>
+      <staff-form update :info="updateForm" @submit="updateStaff" inline style="width: 100%" v-if="dialogStaffUpdateVisible"></staff-form>
     </el-dialog>
   </div>
 </template>
@@ -395,7 +395,6 @@ export default {
      * @param index
      */
     cellDutyOfficeArrayFormat (row, column, cellValue, index) {
-      console.log(row, column, cellValue, index)
       if (isEmpty(cellValue)) {
         return `${column.label}暂无`
       }
@@ -455,7 +454,7 @@ export default {
       temp.dutyIdList = temp.dutyList.map(item => item.id)
       temp.officeIdList = temp.officeList.map(item => item.id)
       this.updateForm = temp
-      console.log(temp)
+      console.log(this.updateForm)
       this.dialogStaffUpdateVisible = true
     },
     /**
@@ -614,5 +613,20 @@ export default {
 #staff-find {
   height: 100%;
   width: 100%;
+}
+
+.form-item {
+  width: 380px !important;
+}
+
+#form-item-option-inline {
+  display: block;
+  width: 100% !important;
+  text-align: center;
+}
+
+#form-item-option {
+  width: 100% !important;
+  text-align: right;
 }
 </style>

@@ -1,59 +1,62 @@
 <template>
   <!-- 基础的人员信息表单 -->
-  <el-form ref="staffForm" :model="staffInfo" :rules="update ? updateRules : rules" label-width="100px"
-           style="width: 600px" :inline="inline">
-    <el-form-item label="姓名" prop="name">
-      <el-input v-model.trim="staffInfo.name" placeholder="请输入姓名" :maxlength="30" show-word-limit/>
+  <el-form ref="staffForm" :model="staffInfo" :rules="update ? updateRules : rules" label-width="100px" style="width: 600px" :inline="inline">
+    <el-form-item label="姓名" prop="name" class="form-item">
+      <el-input v-model.trim="staffInfo.name" placeholder="请输入姓名" :maxlength="30" show-word-limit style="width: 240px"/>
     </el-form-item>
-    <el-form-item label="密码" prop="password">
+    <el-form-item label="密码" prop="password" class="form-item">
       <el-input v-model.trim="staffInfo.password" type="password" placeholder="请输入密码(最多20个字)" show-password
-                :maxlength="20" show-word-limit/>
+                :maxlength="20" show-word-limit style="width: 240px"/>
     </el-form-item>
-    <el-form-item label="确认密码" prop="checkPassword">
+    <el-form-item label="确认密码" prop="checkPassword" class="form-item">
       <el-input v-model.trim="staffInfo.checkPassword" type="password" placeholder="请输入确认密码" show-password
-                :maxlength="20" show-word-limit/>
+                :maxlength="20" show-word-limit style="width: 240px"/>
     </el-form-item>
-    <el-form-item label="性别" prop="sex">
+    <el-form-item label="祖籍" prop="originalHome" class="form-item">
+      <el-input v-model="staffInfo.originalHome" placeholder="请输入祖籍" :maxlength="30" show-word-limit
+                style="width: 240px"/>
+    </el-form-item>
+    <el-form-item label="性别" prop="sex" class="form-item">
       <el-radio-group v-model="staffInfo.sex">
         <el-radio-button v-for="(item, index) in sex" :key="index" :label="item.value">{{ item.desc }}
         </el-radio-button>
       </el-radio-group>
     </el-form-item>
-    <el-form-item label="联系电话" prop="phone">
-      <el-input v-model.trim="staffInfo.phone" placeholder="请输入联系电话" :maxlength="13" show-word-limit/>
+    <el-form-item label="在职状态" prop="status" class="form-item">
+      <el-radio-group v-model="staffInfo.status">
+        <el-radio-button v-for="(item, index) in status" :key="index" :label="item.value">{{ item.desc }}
+        </el-radio-button>
+      </el-radio-group>
     </el-form-item>
-    <el-form-item label="身份证号" prop="cardId">
-      <el-input v-model="staffInfo.cardId" placeholder="请输入身份证号" :maxlength="18" show-word-limit/>
+    <el-form-item label="联系电话" prop="phone" class="form-item">
+      <el-input v-model.trim="staffInfo.phone" placeholder="请输入联系电话" :maxlength="13" show-word-limit
+                style="width: 240px"/>
     </el-form-item>
-    <el-form-item label="职务" prop="dutyIdList">
-      <el-select v-model="dutyIdListArray" placeholder="请选择职务" multiple filterable clearable>
-        <el-option v-for="(item, index) in duties" :key="index" :label="item.name" :value="item.id"></el-option>
-      </el-select>
+    <el-form-item label="身份证号" prop="cardId" class="form-item">
+      <el-input v-model="staffInfo.cardId" placeholder="请输入身份证号" :maxlength="18" show-word-limit style="width: 240px"/>
     </el-form-item>
-    <el-form-item label="科室" prop="officeIdList">
-      <el-select v-model="officeIdListArray" placeholder="请选择科室" multiple filterable clearable>
-        <el-option v-for="(item, index) in offices" :key="index" :label="item.name" :value="item.id"></el-option>
-      </el-select>
-    </el-form-item>
-    <el-form-item label="祖籍" prop="originalHome">
-      <el-input v-model="staffInfo.originalHome" placeholder="请输入祖籍" :maxlength="255" show-word-limit/>
-    </el-form-item>
-    <el-form-item label="出生日期" prop="birthDate">
+
+    <el-form-item label="出生日期" prop="birthDate" class="form-item">
       <el-date-picker
         v-model="staffInfo.birthDate"
         type="date"
         style="width: 100%"
         placeholder="选择出生日期"/>
     </el-form-item>
-    <el-form-item label="在职状态" prop="status">
-      <el-radio-group v-model="staffInfo.status">
-        <el-radio-button v-for="(item, index) in status" :key="index" :label="item.value">{{ item.desc }}
-        </el-radio-button>
-      </el-radio-group>
+
+    <el-form-item label="职务" prop="dutyIdList" class="form-item">
+      <el-select v-model="dutyIdListArray" placeholder="请选择职务" multiple filterable clearable style="width: 240px">
+        <el-option v-for="(item, index) in duties" :key="index" :label="item.name" :value="item.id"></el-option>
+      </el-select>
     </el-form-item>
-    <el-form-item>
-      <el-button type="primary" @click="onSubmit"><span v-if="update">更新</span><span v-else>上传</span>人员信息</el-button>
-      <el-button @click="$refs.staffForm.resetFields()">重置表单</el-button>
+    <el-form-item label="科室" prop="officeIdList" class="form-item">
+      <el-select v-model="officeIdListArray" placeholder="请选择科室" multiple filterable clearable style="width: 240px">
+        <el-option v-for="(item, index) in offices" :key="index" :label="item.name" :value="item.id"></el-option>
+      </el-select>
+    </el-form-item>
+    <el-form-item class="form-item" :id="inline ? 'form-item-option-inline' : 'form-item-option'">
+      <el-button type="primary" @click="onSubmit"><span v-if="update">更新</span><span v-else>上传</span></el-button>
+      <el-button @click="$refs.staffForm.resetFields()">重置</el-button>
     </el-form-item>
   </el-form>
 </template>
@@ -253,6 +256,10 @@ export default {
       this.staffInfo.createId = JSON.parse(localStorage.getItem('userId'))
     }
   },
+  activated () {
+    console.log('active')
+    this.staffInfo = clone(this.info)
+  },
   methods: {
     /**
      * 验证密码
@@ -435,5 +442,18 @@ export default {
 </script>
 
 <style scoped>
+.form-item {
+  width: 340px !important;
+}
 
+#form-item-option-inline {
+  display: block;
+  width: 100% !important;
+  text-align: center;
+}
+
+#form-item-option {
+  width: 100% !important;
+  text-align: right;
+}
 </style>
