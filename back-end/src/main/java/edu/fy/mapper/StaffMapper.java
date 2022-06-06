@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import edu.fy.entity.Staff;
 import edu.fy.entity.dto.StaffQueryConditionDTO;
 import edu.fy.entity.vo.StaffQueryWithCreatorUpdaterDutyOfficeVO;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -14,6 +15,7 @@ import org.apache.ibatis.annotations.Param;
 * @createDate 2022-05-26 10:09:49
 * @Entity edu.fy.entity.Staff
 */
+@Mapper
 public interface StaffMapper extends BaseMapper<Staff> {
 
     /**

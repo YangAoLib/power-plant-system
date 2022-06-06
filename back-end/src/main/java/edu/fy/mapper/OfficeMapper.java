@@ -2,6 +2,7 @@ package edu.fy.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import edu.fy.entity.Office;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
 * @author YangAo
@@ -9,6 +10,7 @@ import edu.fy.entity.Office;
 * @createDate 2022-05-26 10:09:49
 * @Entity edu.fy.entity.Office
 */
+@Mapper
 public interface OfficeMapper extends BaseMapper<Office> {
 
 }

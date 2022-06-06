@@ -3,6 +3,7 @@ package edu.fy.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import edu.fy.entity.StaffDuty;
 import edu.fy.entity.dto.DutyBaseDTO;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
 * @createDate 2022-06-01 21:53:12
 * @Entity edu.fy.entity.StaffDuty
 */
+@Mapper
 public interface StaffDutyMapper extends BaseMapper<StaffDuty> {
 
     /**
