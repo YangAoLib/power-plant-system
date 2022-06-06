@@ -1,7 +1,11 @@
 package edu.fy.mapper;
 
-import edu.fy.entity.StaffOffice;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import edu.fy.entity.StaffOffice;
+import edu.fy.entity.dto.OfficeBaseDTO;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * @author poppy
@@ -11,6 +15,12 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface StaffOfficeMapper extends BaseMapper<StaffOffice> {
 
+    /**
+     * 根据人员id查询科室信息
+     * @param staffId 人员id
+     * @return 人员对应的科室信息列表
+     */
+    List<OfficeBaseDTO> selectOfficeBaseByStaffId(@Param("staffId") Integer staffId);
 }
 
 

@@ -5,12 +5,19 @@
 <mapper namespace="edu.fy.mapper.StaffOfficeMapper">
 
     <resultMap id="BaseResultMap" type="edu.fy.entity.StaffOffice">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="staffId" column="staff_id" jdbcType="INTEGER"/>
-            <result property="officeId" column="office_id" jdbcType="INTEGER"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="staffId" column="staff_id" jdbcType="INTEGER"/>
+        <result property="officeId" column="office_id" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,staff_id,office_id
+        id
+        ,staff_id,office_id
     </sql>
+    <select id="selectOfficeBaseByStaffId" resultType="officeBaseDTO">
+        select o.id, o.name
+        from staff_office so
+                 left join office o on o.id = so.office_id
+        where so.staff_id = #{staffId}
+    </select>
 </mapper>

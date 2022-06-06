@@ -5,12 +5,19 @@
 <mapper namespace="edu.fy.mapper.StaffDutyMapper">
 
     <resultMap id="BaseResultMap" type="edu.fy.entity.StaffDuty">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="staffId" column="staff_id" jdbcType="INTEGER"/>
-            <result property="dutyId" column="duty_id" jdbcType="INTEGER"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="staffId" column="staff_id" jdbcType="INTEGER"/>
+        <result property="dutyId" column="duty_id" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,staff_id,duty_id
+        id
+        ,staff_id,duty_id
     </sql>
+    <select id="selectDutyBaseByStaffId" resultType="dutyBaseDTO">
+        select d.id, d.name
+        from staff_duty sd
+                 left join duty d on sd.duty_id = d.id
+        where sd.staff_id = #{staffId}
+    </select>
 </mapper>

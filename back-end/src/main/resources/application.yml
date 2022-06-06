@@ -22,6 +22,9 @@ spring:
   mvc:
     format:
       date: yyyy-MM-dd
+  redis:
+    # TODO: Redis 密码
+    password: nswdfq
 
 mybatis-plus:
   configuration:

@@ -27,8 +27,10 @@
                      javaType="StaffBaseDeletedDTO"/>
         <association property="updater" columnPrefix="u_"
                      javaType="StaffBaseDeletedDTO"/>
-        <collection property="dutyList" columnPrefix="d_" ofType="dutyBaseDTO" />
-        <collection property="officeList" columnPrefix="f_" ofType="officeBaseDTO"/>
+        <collection property="dutyList" ofType="dutyBaseDTO" column="id"
+                    select="edu.fy.mapper.StaffDutyMapper.selectDutyBaseByStaffId"/>
+        <collection property="officeList" ofType="officeBaseDTO" column="id"
+                    select="edu.fy.mapper.StaffOfficeMapper.selectOfficeBaseByStaffId"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -76,57 +78,51 @@
         su.phone u_phone,
         su.card_id u_card_id,
         su.status u_status,
-        su.is_deleted u_is_deleted,
-        d.id d_id,
-        d.name d_name,
-        f.id f_id,
-        f.name f_name
+        su.is_deleted u_is_deleted
         from staff s
         left join staff sc on sc.id = s.create_id
         left join staff su on su.id = s.update_id
-        left join staff_duty sd on sd.staff_id = s.id
-        left join staff_office sf on sf.staff_id = s.id
-        left join duty d on d.id = sd.duty_id
-        left join office f on f.id = sf.office_id
         <where>
-            <if test="condition.name != null and !condition.name.isBlank()">
-                and s.name like concat('%', #{condition.name}, '%')
-            </if>
-            <if test="condition.phone != null and !condition.phone.isBlank()">
-                and s.phone = #{condition.phone}
-            </if>
-            <if test="condition.cardId != null and !condition.cardId.isBlank()">
-                and s.card_id = #{condition.cardId}
-            </if>
-            <if test="condition.status != null">
-                and s.status = #{condition.status}
-            </if>
-            <if test="condition.sex != null">
-                and s.sex = #{condition.sex}
-            </if>
-            <if test="condition.originalHome != null and !condition.originalHome.isBlank()">
-                and s.original_home like concat('%', #{condition.originalHome}, '%')
-            </if>
-            <if test="condition.birthDateStart != null and condition.birthDateEnd != null and condition.birthDateStart &lt;= condition.birthDateEnd">
-                and s.birth_date between #{condition.birthDateStart} and #{condition.birthDateEnd}
-            </if>
-            <if test="condition.createTimeStart != null and condition.createTimeEnd != null and condition.createTimeStart &lt;= condition.createTimeEnd">
-                and s.create_time between #{condition.createTimeStart} and #{condition.createTimeEnd}
-            </if>
-            <if test="condition.updateTimeStart != null and condition.updateTimeEnd != null and condition.updateTimeStart &lt;= condition.updateTimeEnd">
-                and s.update_time between #{condition.updateTimeStart} and #{condition.updateTimeEnd}
-            </if>
-            <if test="condition.createId != null and condition.createId &gt;= 0">
-                and s.create_id = #{condition.createId}
-            </if>
-            <if test="condition.updateId != null and condition.updateId &gt;= 0">
-                and s.update_id = #{condition.updateId}
-            </if>
-            <if test="condition.creatorCardId != null and !condition.creatorCardId.isBlank()">
-                and sc.card_id = #{condition.creatorCardId}
-            </if>
-            <if test="condition.updaterCardId != null and !condition.updaterCardId.isBlank()">
-                and su.card_id = #{condition.updaterCardId}
+            <if test="condition != null">
+                <if test="condition.name != null and !condition.name.isBlank()">
+                    and s.name like concat('%', #{condition.name}, '%')
+                </if>
+                <if test="condition.phone != null and !condition.phone.isBlank()">
+                    and s.phone = #{condition.phone}
+                </if>
+                <if test="condition.cardId != null and !condition.cardId.isBlank()">
+                    and s.card_id = #{condition.cardId}
+                </if>
+                <if test="condition.status != null">
+                    and s.status = #{condition.status}
+                </if>
+                <if test="condition.sex != null">
+                    and s.sex = #{condition.sex}
+                </if>
+                <if test="condition.originalHome != null and !condition.originalHome.isBlank()">
+                    and s.original_home like concat('%', #{condition.originalHome}, '%')
+                </if>
+                <if test="condition.birthDateStart != null and condition.birthDateEnd != null and condition.birthDateStart &lt;= condition.birthDateEnd">
+                    and s.birth_date between #{condition.birthDateStart} and #{condition.birthDateEnd}
+                </if>
+                <if test="condition.createTimeStart != null and condition.createTimeEnd != null and condition.createTimeStart &lt;= condition.createTimeEnd">
+                    and s.create_time between #{condition.createTimeStart} and #{condition.createTimeEnd}
+                </if>
+                <if test="condition.updateTimeStart != null and condition.updateTimeEnd != null and condition.updateTimeStart &lt;= condition.updateTimeEnd">
+                    and s.update_time between #{condition.updateTimeStart} and #{condition.updateTimeEnd}
+                </if>
+                <if test="condition.createId != null and condition.createId &gt;= 0">
+                    and s.create_id = #{condition.createId}
+                </if>
+                <if test="condition.updateId != null and condition.updateId &gt;= 0">
+                    and s.update_id = #{condition.updateId}
+                </if>
+                <if test="condition.creatorCardId != null and !condition.creatorCardId.isBlank()">
+                    and sc.card_id = #{condition.creatorCardId}
+                </if>
+                <if test="condition.updaterCardId != null and !condition.updaterCardId.isBlank()">
+                    and su.card_id = #{condition.updaterCardId}
+                </if>
             </if>
             and s.is_deleted = 0
         </where>
