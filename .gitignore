@@ -236,7 +236,3 @@ dist
 # lock file
 /front-end/yarn.lock
 /front-end/package-lock.json
-
-# .idea
-.idea
-*.iml
