@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 import clone from 'clone'
 import MenuList from '@/store/types/menu-list'
+import MenuBreadcrumb from '@/store/types/menu-breadcrumb'
 
 Vue.use(Vuex)
 
@@ -11,24 +12,31 @@ export default new Vuex.Store({
     menuList: [{
       path: 'staff',
       name: 'staff',
-      title: '人员管理',
-      icon: 'el-icon-user-solid',
+      meta: {
+        title: '人员管理',
+        icon: 'el-icon-user-solid'
+      },
       children: [{
         path: 'add',
         name: 'staffAdd',
-        title: '人员添加',
-        icon: 'el-icon-plus',
-        component: '/main/staff/StaffAdd'
+        component: '/main/staff/StaffAdd',
+        meta: {
+          title: '人员添加',
+          icon: 'el-icon-plus'
+        }
       }, {
         path: 'find',
         name: 'staffFind',
-        title: '人员查看',
-        icon: 'el-icon-s-grid',
-        component: '/main/staff/StaffFind'
+        component: '/main/staff/StaffFind',
+        meta: {
+          title: '人员查看',
+          icon: 'el-icon-s-grid'
+        }
       }]
     }],
     menuPrefix: '/main',
-    menuParentName: 'main'
+    menuParentName: 'main',
+    menuBreadcrumb: []
   },
   getters: {
   },
@@ -44,9 +52,23 @@ export default new Vuex.Store({
     },
     [MenuList.SET_MENU_PARENT_NAME] (state, menuParentName) {
       state.menuParentName = menuParentName
+    },
+    [MenuBreadcrumb.ADD_MENU_BREADCRUMB] (state, breadcrumb) {
+      // 查找是否有相同的
+      const indexExist = state.menuBreadcrumb.findIndex(item => item.name === breadcrumb.name)
+      if (indexExist !== -1) {
+        // 存在则先删除
+        state.menuBreadcrumb.splice(indexExist, 1)
+      }
+      // 添加操作
+      state.menuBreadcrumb.push(breadcrumb)
+    },
+    [MenuBreadcrumb.RESET_MENU_BREADCRUMB] (state) {
+      state.menuBreadcrumb = []
     }
   },
   actions: {
+
   },
   plugins: [
     createPersistedState({

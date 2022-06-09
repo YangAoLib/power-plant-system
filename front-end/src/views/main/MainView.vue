@@ -7,7 +7,10 @@
         <!--侧边栏-->
         <el-aside style="width: 200px"><main-aside></main-aside></el-aside>
         <!--主要显示部分-->
-        <el-main><router-view/></el-main>
+        <el-main>
+          <main-breadcrumb></main-breadcrumb>
+          <router-view/>
+        </el-main>
       </el-container>
     </el-container>
   </div>
@@ -16,12 +19,18 @@
 <script>
 import MainHeader from '@/components/main/MainHeader'
 import MainAside from '@/components/main/MainAside'
+import MainBreadcrumb from '@/components/main/MainBreadcrumb'
 
 export default {
   name: 'MainView',
-  components: { MainAside, MainHeader },
+  components: { MainBreadcrumb, MainAside, MainHeader },
   created () {
     localStorage.setItem('userId', '1')
+  },
+  watch: {
+    $route (route) {
+      console.log(route)
+    }
   }
 }
 </script>

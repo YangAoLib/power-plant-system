@@ -335,9 +335,6 @@ export default {
     // 获取性别与在职状态枚举信息
     this.getSexEnums()
     this.getStatusEnums()
-
-    // test
-    // console.log(isBlank('yangao'))
   },
   methods: {
     /**
@@ -345,7 +342,6 @@ export default {
      */
     getStaffInfoList () {
       this.axios.post('/staff/query', this.conditionTemp).then(res => {
-        console.log(res)
         if (res.status === 200) {
           this.tableData = res.data.records
           this.page.total = res.data.total

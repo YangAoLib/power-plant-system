@@ -3,16 +3,16 @@
     <template v-if="menuItem.children != null && menuItem.children.length > 0">
       <el-submenu :index="menuItem.path">
         <template slot="title">
-          <i :class="menuItem.icon"></i>
-          <span>{{menuItem.title}}</span>
+          <i :class="menuItem.meta.icon"></i>
+          <span>{{menuItem.meta.title}}</span>
         </template>
         <my-menu-item v-for="(childMenuItem, index) in menuItem.children" :key="index" :item="childMenuItem"></my-menu-item>
       </el-submenu>
     </template>
     <template v-else>
       <el-menu-item :index="menuItem.path">
-        <i :class="menuItem.icon"></i>
-        <span slot="title">{{ menuItem.title }}</span>
+        <i :class="menuItem.meta.icon"></i>
+        <span slot="title">{{ menuItem.meta.title }}</span>
       </el-menu-item>
     </template>
   </div>
