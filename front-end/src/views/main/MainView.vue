@@ -26,11 +26,6 @@ export default {
   components: { MainBreadcrumb, MainAside, MainHeader },
   created () {
     localStorage.setItem('userId', '1')
-  },
-  watch: {
-    $route (route) {
-      console.log(route)
-    }
   }
 }
 </script>
