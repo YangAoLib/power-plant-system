@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # TODO: 数据库配置
+    url: jdbc:mysql://localhost:3306/power_plant?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
+    username: yangao
+    password: nswdfq
+  redis:
+    # TODO: Redis配置
+    host: localhost
+    port: 6379
+    password: nswdfq
+  mvc:
+    format:
+      date: yyyy-MM-dd
+
+# mybatis plus 相关配置
+mybatis-plus:
+  configuration:
+    auto-mapping-behavior: full
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  type-aliases-package: edu.fy.entity
+  type-enums-package: edu.fy.entity.enums

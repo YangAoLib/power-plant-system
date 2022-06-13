@@ -227,9 +227,6 @@ dist
 # jrebel
 /back-end/src/main/resources/rebel.xml
 
-# application.yml
-/back-end/src/main/resources/application.yml
-
 # node_modules
 /front-end/node_modules
 
