@@ -1,3 +1,7 @@
+server:
+  # 端口号配置
+  port: 9090
+
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -21,3 +25,34 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   type-aliases-package: edu.fy.entity
   type-enums-package: edu.fy.entity.enums
+
+# swagger 配置
+open-api:
+  # 文档信息
+  info:
+    # 文档标题
+    title: swagger3文档
+    # 文档描述
+    description: 什么时候努力都不晚除了一会儿
+    # 文档版本
+    version: 0.0.1
+    # 许可证信息
+    license:
+      # 许可证名称
+      name: Apache 2.0
+      # 许可证地址
+      url: https://www.apache.org/licenses/LICENSE-2.0.html
+    # 文档联系人信息
+    contact:
+      # 姓名
+      name: 杨奥
+      # 主页
+      url: https://github.com/YangAoLib
+      # 邮箱, 用于发送邮件
+      email: ya1398789131@163.com
+  # 服务器信息
+  servers:
+    - url: http://localhost:9090  # 地址
+      description: 开发环境  # 描述
+    - url: https://github.com/YangAoLib
+      description: 我的github
