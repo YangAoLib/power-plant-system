@@ -11,6 +11,14 @@ public enum ResultCode implements BaseErrorInfoInterface {
      */
     SUCCESS(200, "成功"),
     /**
+     * 未进行认证
+     */
+    UNAUTHORIZED(401, "认证失败, 请重新登录"),
+    /**
+     * 访问权限不足
+     */
+    FORBIDDEN(403, "访问权限不足"),
+    /**
      * 系统错误
      */
     SYSTEM_ERROR(500, "系统错误"),
@@ -30,6 +38,10 @@ public enum ResultCode implements BaseErrorInfoInterface {
      * 业务逻辑错误
      */
     LOGICAL_ERROR(2000, "业务逻辑错误"),
+    /**
+     * 有其他数据依赖于此数据
+     */
+    DATA_ASSOCIATION(2001, "有其他数据依赖于此数据"),
     /**
      * 数据库错误
      */

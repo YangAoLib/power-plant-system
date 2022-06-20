@@ -1,52 +1,64 @@
 package edu.fy.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;
 
 /**
  * 职务
- * @author YangAo
+ * @author poppy
  * @TableName duty
  */
 @TableName(value ="duty")
 @Data
+@Schema(description = "职务信息")
 public class Duty implements Serializable {
     /**
      * 主键
      */
     @TableId(type = IdType.AUTO)
+    @Min(1)
+    @Schema(description = "主键")
     private Integer id;
 
     /**
      * 职务名
      */
+    @NotBlank
+    @Schema(description = "职务名称")
     private String name;
 
     /**
      * 创建时间
      */
     @TableField(fill = FieldFill.INSERT)
+    @Schema(description = "创建时间")
     private Date createTime;
 
     /**
      * 创建者id
      */
     @TableField(fill = FieldFill.INSERT)
+    @Schema(description = "创建者id")
     private Integer createId;
 
     /**
      * 更新时间
      */
     @TableField(fill = FieldFill.UPDATE)
+    @Schema(description = "更新时间")
     private Date updateTime;
 
     /**
      * 更新者id
      */
     @TableField(fill = FieldFill.UPDATE)
+    @Schema(description = "更新者id")
     private Integer updateId;
 
     @TableField(exist = false)

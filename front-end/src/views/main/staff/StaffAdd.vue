@@ -7,6 +7,7 @@
 <script>
 
 import StaffForm from '@/components/staff/StaffForm'
+
 export default {
   name: 'StaffAdd',
   components: { StaffForm },
@@ -18,7 +19,7 @@ export default {
           this.$message.success('人员信息添加成功')
           form.resetFields()
         } else {
-          this.$message.error(`人员信息添加添加失败, 原因是${res.desc}`)
+          this.$message.error(`人员信息添加添加失败, 原因是${res.message}`)
         }
       }).catch(err => {
         console.log(err)

@@ -5,7 +5,7 @@ import edu.fy.entity.Duty;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
-* @author YangAo
+* @author poppy
 * @description 针对表【duty(职务)】的数据库操作Mapper
 * @createDate 2022-05-26 10:09:49
 * @Entity edu.fy.entity.Duty

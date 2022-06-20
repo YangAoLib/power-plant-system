@@ -9,7 +9,9 @@
         <!--主要显示部分-->
         <el-main>
           <main-breadcrumb></main-breadcrumb>
-          <router-view/>
+          <div style="height: 92%">
+            <router-view />
+          </div>
         </el-main>
       </el-container>
     </el-container>
@@ -25,7 +27,6 @@ export default {
   name: 'MainView',
   components: { MainBreadcrumb, MainAside, MainHeader },
   created () {
-    localStorage.setItem('userId', '1')
   }
 }
 </script>

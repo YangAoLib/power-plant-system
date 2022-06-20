@@ -83,7 +83,7 @@
     <!-- 数据展示表格-->
     <el-table
       :data="tableData"
-      style="width: 100%" height="520px" stripe border>
+      style="width: 100%" height="480px" stripe border>
       <el-table-column type="index" fixed="left" :index="(index) => 1 + index + (condition.currentPage - 1) * condition.pageSize"/>
       <el-table-column prop="name" label="姓名" fixed="left"/>
       <el-table-column prop="dutyList" label="职务" :formatter="cellDutyOfficeArrayFormat" />

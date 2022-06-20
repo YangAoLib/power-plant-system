@@ -27,8 +27,18 @@ export default {
     },
     // todo: 退出方法
     logout () {
-      console.log('test')
-      this.$router.push('/login')
+      this.axios.get('/user/logout').then(res => {
+        if (res.status === 200 && res.data) {
+          localStorage.clear()
+          this.$router.push('/login')
+          this.$message.success('退出成功')
+        } else {
+          Promise.reject(res)
+        }
+      }).catch(err => {
+        console.error(err)
+        this.$message.error('服务器错误')
+      })
     }
   }
 }

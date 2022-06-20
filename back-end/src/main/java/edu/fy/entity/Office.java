@@ -1,51 +1,64 @@
 package edu.fy.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;
 
 /**
  * 科室
- * @author YangAo
+ * @author poppy
  * @TableName office
  */
 @TableName(value ="office")
 @Data
+@Schema(description = "科室信息")
 public class Office implements Serializable {
     /**
      * 主键
      */
     @TableId(type = IdType.AUTO)
+    @Min(1)
+    @Schema(description = "主键")
     private Integer id;
 
     /**
      * 科室名
      */
+    @NotBlank
+    @Schema(description = "科室名称")
     private String name;
 
     /**
      * 创建时间
      */
+    @TableField(fill = FieldFill.INSERT)
+    @Schema(description = "创建时间")
     private Date createTime;
 
     /**
      * 创建者id
      */
+    @TableField(fill = FieldFill.INSERT)
+    @Schema(description = "创建者id")
     private Integer createId;
 
     /**
      * 更新时间
      */
+    @TableField(fill = FieldFill.UPDATE)
+    @Schema(description = "更新时间")
     private Date updateTime;
 
     /**
      * 更新者id
      */
+    @TableField(fill = FieldFill.UPDATE)
+    @Schema(description = "更新者id")
     private Integer updateId;
 
     @TableField(exist = false)

@@ -39,12 +39,16 @@ export default {
         path,
         meta
       } = route
-      const temp = {
-        name,
-        path,
-        meta
+      // 如果不是主页面, 才进行添加
+      if (name !== this.$store.state.menuParentName) {
+        // 生成面包屑对象
+        const temp = {
+          name,
+          path,
+          meta
+        }
+        this.$store.commit(MenuBreadcrumb.ADD_MENU_BREADCRUMB, temp)
       }
-      this.$store.commit(MenuBreadcrumb.ADD_MENU_BREADCRUMB, temp)
     }
   },
   computed: {

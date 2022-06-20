@@ -12,8 +12,8 @@ import lombok.Getter;
  * @Description 删除枚举类
  * @create 2022-05-28 16:07
  */
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum DeletedEnum implements IEnum<Integer> {
     /**

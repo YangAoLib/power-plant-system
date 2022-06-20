@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
- * @author YangAo
+ * @author poppy
  * @Description 科室基础信息传输类
  * @create 2022-06-04 15:29
  */

@@ -17,8 +17,8 @@ import java.util.List;
  * @Description 更新人员信息类
  * @create 2022-05-28 18:39
  */
-@Schema(description = "更新人员信息类")
 @Data
+@Schema(description = "更新人员信息类")
 public class StaffDutyOfficeUpdateDTO {
 
     /**

@@ -33,6 +33,22 @@ export default new Vuex.Store({
           icon: 'el-icon-s-grid'
         }
       }]
+    }, {
+      path: 'duty',
+      name: 'duty',
+      meta: {
+        title: '职务管理',
+        icon: 'el-icon-s-cooperation'
+      },
+      component: '/main/duty/DutyManage'
+    }, {
+      path: 'office',
+      name: 'office',
+      meta: {
+        title: '科室管理',
+        icon: 'el-icon-s-home'
+      },
+      component: '/main/office/OfficeManage'
     }],
     menuPrefix: '/main',
     menuParentName: 'main',
